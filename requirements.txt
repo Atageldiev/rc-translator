@@ -32,7 +32,6 @@ pip-review==1.1.0
 PyAutoGUI==0.9.50
 pycodestyle==2.6.0
 pycparser==2.20
-pygame==1.9.6
 PyGetWindow==0.0.8
 PyMsgBox==1.0.8
 pyparsing==2.4.7
@@ -40,10 +39,7 @@ pyperclip==1.8.0
 PyRect==0.1.4
 pyscreenshot==2.2
 PyScreeze==0.1.26
-pyTelegramBotAPI==3.7.1
-pytesseract==0.3.4
 python-box==4.2.3
-python-telegram-bot==12.7
 PyTweening==1.0.3
 pytz==2020.1
 pywin32-ctypes==0.2.0
@@ -53,7 +49,6 @@ ruamel.yaml.clib==0.2.0
 schedule==0.6.0
 six==1.14.0
 soupsieve==2.0.1
-telebot==0.0.3
 toml==0.10.1
 tornado==6.0.4
 urllib3==1.25.9
