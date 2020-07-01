@@ -22,26 +22,42 @@ from aiogram import executor
 from aiogram.types import Message, CallbackQuery
 
 # import from my files
-from loader import dp
-from command_handler import send_welcome, command_translate, translate_state_0
+from loader import dp, db
+from command_handler import *
+from callback_handler import *
 from utils import States
 
 # Configure logging
 logging = logging.basicConfig(level=logging.INFO)
+db.create_table()
 
 @dp.message_handler(commands="start")
 async def procces_send_welcome(message: Message):
     await send_welcome(message)
 
-@dp.message_handler(commands="translate")
+@dp.message_handler(commands="translate") # Тут выберется язык для перевода
 async def procces_translate(message: Message):
     await command_translate(message)
 
+@dp.message_handler(state=States.all()[0])
+async def process_state_choose_lang_into(message: Message):
+    await state_choose_lang_into(message)
 
-@dp.message_handler(state=States.STATE_0)
-async def process_translate_state_0(message: Message):
-    await translate_state_0(message)
 
+@dp.message_handler(state=States.all()[1])
+async def process_state_choose_lang_into(message: Message):
+    await state_send_word(message)
+
+@dp.message_handler(state=States.all()[2])
+async def process_state_send_word(message: Message):
+    await state_send_result(message)
+
+
+
+# Handle all inline-buttons
+@dp.callback_query_handler(lambda c: c.data == "show_examples")
+async def process_show_examples(callback_query: CallbackQuery):
+    await show_examples(callback_query)
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
