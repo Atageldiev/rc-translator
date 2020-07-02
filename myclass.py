@@ -59,20 +59,26 @@ class Sqlighter():
         with self.connection:
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS status(
                 user_id INT,
+                name STRING,
                 word STRING,
                 lang_from STRING,
                 lang_into STRING,
                 words_translated INT
                 )""")
     
-    def user_id_exists(self, user_id):
+    def user_id_exists(self, user_id, name):
         """Проверит есть ли такой юзер в базе, если нет - добавит"""
         with self.connection:
             self.cursor.execute(
                 f"SELECT user_id FROM status WHERE user_id={user_id}")
             if self.cursor.fetchone() is None:
                 self.cursor.execute(
-                    f"INSERT INTO status VALUES (?, ?, ?, ?, ?)", (user_id, "", "", "", 0))
+                    f"INSERT INTO status VALUES (?, ?, ?, ?, ?, ?)", (user_id, name, "", "", "", 0))
+    
+    def get_user_ids(self):
+        """Берем все user_id в базе"""
+        with self.connection:
+            return self.cursor.execute(f"SELECT user_id FROM status").fetchall()
 
     def get_value(self, name, user_id):
         with self.connection:

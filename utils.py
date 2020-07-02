@@ -1,11 +1,14 @@
 from aiogram.utils.helper import Helper, HelperMode, ListItem
 
 
-class States(Helper):
+class WordStates(Helper):
     mode = HelperMode.snake_case
 
     STATE_CHOOSE_LANG_INTO = ListItem()
     STATE_SEND_WORD = ListItem()
     STATE_SEND_RESULT = ListItem()
-    # STATE_0 = ListItem()
-    # STATE_0 = ListItem()
+
+class AdminStates(Helper):
+    mode = HelperMode.snake_case
+
+    STATE_SEND_MESSAGE_ALL = ListItem()

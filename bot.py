@@ -23,35 +23,49 @@ from aiogram.types import Message, CallbackQuery
 
 # import from my files
 from loader import dp, db
+from config import ADMIN_ID
 from command_handler import *
 from callback_handler import *
-from utils import States
+from utils import WordStates, AdminStates
 
 # Configure logging
 logging = logging.basicConfig(level=logging.INFO)
 db.create_table()
 
+# Handle all commands
 @dp.message_handler(commands="start")
-async def procces_send_welcome(message: Message):
-    await send_welcome(message)
+async def procces_command_start(message: Message):
+    await command_start(message)
 
 @dp.message_handler(commands="translate") # Тут выберется язык для перевода
-async def procces_translate(message: Message):
+async def procces_command_translate(message: Message):
     await command_translate(message)
 
-@dp.message_handler(state=States.all()[0])
+@dp.message_handler(lambda message: message.from_user.id == ADMIN_ID, commands="users", commands_prefix="!")
+async def process_command_users(message: Message):
+    await admin_command_users(message)
+
+@dp.message_handler(lambda message: message.from_user.id == ADMIN_ID, commands="send_all", commands_prefix="!")
+async def process_command_send_all(message: Message):
+    await admin_command_send_all(message)
+
+# Handle all states
+@dp.message_handler(state=WordStates.all()[0])
 async def process_state_choose_lang_into(message: Message):
     await state_choose_lang_into(message)
 
 
-@dp.message_handler(state=States.all()[1])
+@dp.message_handler(state=WordStates.all()[1])
 async def process_state_choose_lang_into(message: Message):
     await state_send_word(message)
 
-@dp.message_handler(state=States.all()[2])
+@dp.message_handler(state=WordStates.all()[2])
 async def process_state_send_word(message: Message):
     await state_send_result(message)
 
+@dp.message_handler(state=AdminStates.all()[0])
+async def process_state_send_message_all(message: Message):
+    await admin_state_send_message_all(message)
 
 
 # Handle all inline-buttons

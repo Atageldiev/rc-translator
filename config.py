@@ -178,4 +178,3 @@ ALLOWED_LANGS = {
                   "испанский",
                   "французский"],
 }
-print(len(ALLOWED_LANGS.keys()))
