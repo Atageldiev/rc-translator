@@ -34,6 +34,20 @@ class Parser():
         else:
             await message.answer("ERROR, TRY AGAIN\n/translate")
         
+    async def parse_native_english(message, url):
+        HEADERS = {'user-agent': 'my-app/0.0.1'}
+        response = requests.get(url, headers=HEADERS)
+        html = BS(response.content, "html.parser")
+
+        html_select = html.select('.list__item > a')
+        del html_select[-1], html_select[-1], html_select[-1]
+        markup = types.InlineKeyboardMarkup()
+        markup.add(types.InlineKeyboardButton(text="Определение | Definition", url=url))
+        for el in html_select:
+            url = "https://www.native-english.ru" + str(el.get('href'))
+            text = Parser.__getText(el.text)
+            markup.add(types.InlineKeyboardButton(text=text, url=url))
+        await message.answer("<b>Вот что я нашел: </b>\n<em>Нажмите на соответствующую кнопку, чтобы перейти на сайт и почитать подробнее</em>", reply_markup=markup)
 
     async def parse(message, word: str, lang_from: str, lang_into: str, state: int):
         URL=f"https://context.reverso.net/перевод/{lang_from}-{lang_into}/" + word
@@ -48,14 +62,15 @@ class Parser():
             await Parser.__parse_examples(html, message)
 
 
+
 class Sqlighter():
     def __init__(self, database="server.db"):
         self.connection = sqlite3.connect(
             database=database, check_same_thread=False)
         self.cursor = self.connection.cursor()
 
-    def create_table(self):
-        """Создаст таблицу"""
+    def create_table_status(self):
+        """Создаст таблицу статусов"""
         with self.connection:
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS status(
                 user_id INT,
@@ -63,17 +78,38 @@ class Sqlighter():
                 word STRING,
                 lang_from STRING,
                 lang_into STRING,
-                words_translated INT
+                words_translated INT,
+                grammar_used INT
                 )""")
     
+    # def create_table_files(self):
+    #     """Создаст таблицу files"""
+    #     with self.connection:
+    #         self.cursor.execute("""CREATE TABLE IF NOT EXISTS files(
+    #             file_id STRING,
+    #             file_name STRING,
+    #             sent_times INT
+    #         )""")
+
+    # def file_exists(self, file_id, file_name):
+    #     """Проверит есть ли такой файл в базе, если нет - добавит"""
+    #     with self.connection:
+    #         self.cursor.execute("SELECT file_id FROM files WHERE file_id=(?)", (file_id,))
+    #         if self.cursor.fetchone() is None:
+    #             self.cursor.execute("INSERT INTO files VALUES (?, ?, ?)", (file_id, file_name, 0))
+    
+    # def get_file_id(self, file_name):
+    #     with self.connection:
+    #         for i in self.cursor.execute("SELECT file_id FROM files WHERE file_name =(?)", (file_name,)):
+    #             return i[0]
+
+
     def user_id_exists(self, user_id, name):
         """Проверит есть ли такой юзер в базе, если нет - добавит"""
         with self.connection:
-            self.cursor.execute(
-                f"SELECT user_id FROM status WHERE user_id={user_id}")
+            self.cursor.execute(f"SELECT user_id FROM status WHERE user_id={user_id}")
             if self.cursor.fetchone() is None:
-                self.cursor.execute(
-                    f"INSERT INTO status VALUES (?, ?, ?, ?, ?, ?)", (user_id, name, "", "", "", 0))
+                self.cursor.execute(f"INSERT INTO status VALUES (?, ?, ?, ?, ?, ?, ?)", (user_id, name, "", "", "", 0, 0))
     
     def get_user_ids(self):
         """Берем все user_id в базе"""
