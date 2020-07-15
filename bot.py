@@ -15,7 +15,6 @@
 """
 # import required libraries
 import logging
-import schedule
 
 # import from aiogram
 from aiogram import executor
@@ -26,12 +25,12 @@ from loader import dp, db, bot
 from config import ADMIN_ID
 from command_handler import *
 from callback_handler import *
-from utils import WordStates, AdminStates
+from utils import WordStates, AdminStates, LearnerStates
+from mymodule import backUpDB_task
 
 # Configure logging
 logging = logging.basicConfig(level=logging.INFO)
 db.create_table_status()
-# db.create_table_files()
 
 # Handle all commands
 @dp.message_handler(commands="start")
@@ -50,6 +49,10 @@ async def process_command_grammar(message: Message):
 async def process_command_rating(message: Message):
     await command_rating(message)
 
+@dp.message_handler(commands="setsub")
+async def process_command_setsub(message: Message):
+    await command_setsub(message)
+
 @dp.message_handler(lambda message: message.from_user.id == ADMIN_ID, commands="users", commands_prefix="!")
 async def process_command_users(message: Message):
     await admin_command_users(message)
@@ -58,9 +61,21 @@ async def process_command_users(message: Message):
 async def process_command_send_all(message: Message):
     await admin_command_send_all(message)
 
-@dp.message_handler(content_types="photo")
-async def start_func(message: Message):
-    db.file_exists(message.photo[0].file_id, str(message.caption))
+@dp.message_handler(lambda message: message.from_user.id == ADMIN_ID, commands="send_one", commands_prefix="!")
+async def process_command_send_one(message: Message):
+    message = message.text.split("!send_one").pop(-1).split("/")
+    await answer_by_chat_id(chat_id=message[0].strip(" "), text=f"My father @t2elzeth says: \n'<em>{message[1]}</em>'")
+
+@dp.message_handler(lambda message: message.from_user.id == ADMIN_ID, commands="setDB", commands_prefix="!")
+async def process_command_setDB(message: Message):
+    await admin_command_setDB(message)
+
+@dp.message_handler(lambda message: message.from_user.id != ADMIN_ID)
+async def process_empty_messages(message: Message):
+    from_user = message.from_user
+    await answer_by_chat_id(chat_id=ADMIN_ID, text=f"<b>{from_user.first_name}</b> says:\n'<em>{message.text}</em>'\n\
+user_id:{from_user.id}", disable_notification=True)
+
 
 # Handle all states
 @dp.message_handler(state=WordStates.all()[0])
@@ -80,7 +95,33 @@ async def process_state_send_message_all(message: Message):
     await admin_state_send_message_all(message)
 
 
+@dp.message_handler(state=AdminStates.all()[1])
+async def process_admin_state_setDB(message: Message):
+    await admin_state_setDB(message)
+
+@dp.message_handler(state=LearnerStates.all()[0])
+async def process_learnerState_0(message: Message):
+    await learnerState_0(message)
+
+
 # Handle all inline-buttons
+@dp.callback_query_handler(lambda c: c.data == "sub_unsub")
+async def process_sub_unsub(callback_query: CallbackQuery):
+    await sub_unsub(callback_query)
+
+@dp.callback_query_handler(lambda c: c.data == "sub")
+async def process_sub(callback_query: CallbackQuery):
+    await sub(callback_query)
+
+@dp.callback_query_handler(lambda c: c.data == "unsub")
+async def process_unsub(callback_query: CallbackQuery):
+    await unsub(callback_query)
+
+@dp.callback_query_handler(lambda c: c.data == "learning_mode")
+async def process_learning_mode(callback_query: CallbackQuery):
+    await learning_mode(callback_query)
+
+
 @dp.callback_query_handler(lambda c: c.data == "show_examples")
 async def process_show_examples(callback_query: CallbackQuery):
     await show_examples(callback_query)
@@ -149,10 +190,7 @@ async def process_complex_sentences(callback_query: CallbackQuery):
 async def process_indirect_speech(callback_query: CallbackQuery):
     await indirect_speech(callback_query)
 
-@dp.callback_query_handler(lambda c: c.data == "translate_last")
-async def process_translate_last(callback_query: CallbackQuery):
-    await translate_last(callback_query)
-
 if __name__ == '__main__':
+    dp.loop.create_task(backUpDB_task())
     executor.start_polling(dp, skip_updates=True)
     

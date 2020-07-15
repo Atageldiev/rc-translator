@@ -2,10 +2,9 @@
 from aiogram import types
 
 # import from my files
-from loader import dp, db
-from config import ADMIN_ID, LANGS, ALLOWED_LANGS
-from myclass import Parser
-from mymodule import answer_by_chat_id
+from loader import dp, db, Parser
+from config import ADMIN_ID, LANGS, ALLOWED_LANGS, LEARNING_MODE
+from mymodule import answer_by_chat_id, saveDoc
 from utils import WordStates, AdminStates
 
 async def command_start(message):
@@ -17,6 +16,8 @@ async def command_translate(message):
     db.user_id_exists(user_id=message.from_user.id, name=message.from_user.first_name)
 
     state = dp.current_state(user=message.from_user.id)
+
+    db.update_value(name="num", value=3, user_id=message.from_user.id)
 
     markup = types.ReplyKeyboardMarkup(
         resize_keyboard=True, row_width=3, one_time_keyboard=True)
@@ -55,13 +56,20 @@ async def command_rating(message):
     word = db.get_value(name="word", user_id=user_id)
     words_translated = db.get_value(name="words_translated", user_id=user_id)
     grammar_used = db.get_value(name="grammar_used", user_id=user_id)
-    markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton(text="Перевести последнее слово", callback_data="translate_last"))
 
     await message.answer(f"<b><u>{name}</u></b>, ваша статистика:\n\
-    <em>Слов переведено:</em>---  {words_translated}   ---\n \
-    <em>Помощника по грамматике использовано:</em>---  {grammar_used}   ---\n \
-    <em>Последнее переведенное слово:</em>---  '{word}'   ---", reply_markup=markup)
+    <em>Слов переведено:</em>- {words_translated}\n \
+    <em>Помощника по грамматике использовано:</em>- {grammar_used}\n \
+    <em>Последнее переведенное слово:</em>- '{word}'")
+
+async def command_setsub(message):
+    db.user_id_exists(user_id=message.from_user.id, name=message.from_user.first_name)
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton(text="Subscribe/unsubscribe", callback_data="sub_unsub"))
+    markup.add(types.InlineKeyboardButton(text="Change learning_mode", callback_data="learning_mode"))
+
+
+    await message.answer("Что вы хотите сделать?", reply_markup=markup)
 
 async def admin_command_users(message):
     users = []
@@ -76,31 +84,45 @@ async def admin_command_send_all(message):
 
     await state.set_state(AdminStates.all()[0])
 
+async def admin_command_setDB(message):
+    state = dp.current_state(user=message.from_user.id)
+
+    await message.answer("Отправьте файл, который надо загрузить")
+    await state.set_state(AdminStates.all()[1])
 
 async def state_choose_lang_into(message):
     lang_from = message.text 
-    user_id = message.from_user.id
-    db.update_value(name="lang_from", value=lang_from, user_id=user_id)
+    if lang_from in LANGS:
+        user_id = message.from_user.id
+        db.update_value(name="lang_from", value=lang_from, user_id=user_id)
 
-    state = dp.current_state(user=user_id)
+        state = dp.current_state(user=user_id)
 
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3, one_time_keyboard=True)
-    for element in ALLOWED_LANGS.get(lang_from):
-        markup.insert(types.KeyboardButton(text=element))
-        
-    await message.answer("Выберите язык <b><u>на который</u></b> хотите перевести", reply_markup=markup)
-    await state.set_state(WordStates.all()[1])
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3, one_time_keyboard=True)
+        for element in ALLOWED_LANGS.get(lang_from):
+            markup.insert(types.KeyboardButton(text=element))
+            
+        await message.answer("Выберите язык <b><u>на который</u></b> хотите перевести", reply_markup=markup)
+        await state.set_state(WordStates.all()[1])
+    else:
+        await message.answer("ERROR, TRY AGAIN\n/translate", reply_markup=types.ReplyKeyboardRemove())
+        await state.reset_state()
 
 async def state_send_word(message):
-    db.update_value(name="lang_into", value=message.text, user_id=message.from_user.id)
+    user_id = message.from_user.id
+    lang_into = message.text
+    lang_from = db.get_value("lang_from", user_id)
 
-    state = dp.current_state(user=message.from_user.id)
+    if lang_into in ALLOWED_LANGS.get(lang_from):
+        db.update_value(name="lang_into", value=lang_into, user_id=user_id)
 
-    markup = types.ReplyKeyboardMarkup()
-
-    
-    await message.answer("Напишите слово, которое хотите перевести", reply_markup=types.ReplyKeyboardRemove())
-    await state.set_state(WordStates.all()[2])
+        state = dp.current_state(user=user_id)
+        
+        await message.answer("Напишите слово, которое хотите перевести", reply_markup=types.ReplyKeyboardRemove())
+        await state.set_state(WordStates.all()[2])
+    else:
+        await message.answer("ERROR, TRY AGAIN\n/translate", reply_markup=types.ReplyKeyboardRemove())
+        await state.reset_state()
 
 async def state_send_result(message):
     user_id = message.from_user.id
@@ -113,6 +135,7 @@ async def state_send_result(message):
 
     db.update_value(name="words_translated", value=words_translated + 1, user_id=user_id)
     db.update_value(name="word", value=word, user_id=user_id)
+    db.update_value(name="num", value=3, user_id=message.from_user.id)
 
     await Parser.parse(message, word, lang_from, lang_into, state=1)
     await state.reset_state()
@@ -123,4 +146,36 @@ async def admin_state_send_message_all(message):
         await answer_by_chat_id(chat_id=user_id, text=message.text)
 
     await answer_by_chat_id(chat_id=ADMIN_ID, text="Бать, я закончил")
+    await state.reset_state()
+
+async def admin_state_setDB(message):
+    try:
+        document = message.document
+        await saveDoc(document)
+    except:
+        await message.answer("Бать, чет пошло не так")
+
+async def learnerState_0(message):
+    user_id = message.from_user.id
+    state = dp.current_state(user=user_id)
+    
+    if message.text == "Mode 1":
+        db.update_value("learning_mode", 1, user_id)
+        status = 1
+        await message.answer(f"Ваш активный режим обучения: <em> {LEARNING_MODE.get(status)}</em>", reply_markup=types.ReplyKeyboardRemove())
+
+    elif message.text == "Mode 2":
+        db.update_value("learning_mode", 2, user_id)
+        status = 2
+        await message.answer(f"Ваш активный режим обучения: <em> {LEARNING_MODE.get(status)}</em>", reply_markup=types.ReplyKeyboardRemove())
+
+    elif message.text == "Mode 3":
+        db.update_value("learning_mode", 3, user_id)
+        status = 3
+        await message.answer(f"Ваш активный режим обучения: <em> {LEARNING_MODE.get(status)}</em>", reply_markup=types.ReplyKeyboardRemove())
+
+    elif message.text == "Cancel":
+        await message.answer("Cancelled", reply_markup=types.ReplyKeyboardRemove())
+    else:
+        await message.answer("ERROR, TRY AGAIN\n/setsub", reply_markup=types.ReplyKeyboardRemove())
     await state.reset_state()

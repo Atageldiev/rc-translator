@@ -2,14 +2,18 @@
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
+# import from other modules
+
+
 # import from custom files
-# from myclass import Sqlighter
 from config import TOKEN
-from myclass import Sqlighter
+from myclass import Sqlighter, Parser
+
 
 # Initialize bot and dispatcher
 bot = Bot(token=TOKEN, parse_mode="HTML")
 dp = Dispatcher(bot, storage=MemoryStorage())
 
-# Initialize database object
+# Initialize class object
 db = Sqlighter()
+Parser = Parser()

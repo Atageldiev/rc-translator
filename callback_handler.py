@@ -2,20 +2,60 @@
 from aiogram import types
 
 # import from my files
-from myclass import Parser
-from loader import db
-
+from loader import db, Parser, dp
+from config import STATUS, LEARNING_MODE
+from utils import LearnerStates
 
 async def show_examples(callback_query):
-    user_id = callback_query.from_user.id  
+    user_id = callback_query.from_user.id
 
     word = db.get_value(name="word", user_id=user_id)
     lang_from = db.get_value(name="lang_from", user_id=user_id)
     lang_into = db.get_value(name="lang_into", user_id=user_id)
+    num = db.get_value(name="num", user_id=user_id)
 
     await callback_query.answer("Loading...")
+    await Parser.parse(callback_query.message, word, lang_from, lang_into, state=2, num=num)
+    
+    db.update_value(name="num", value=num+3, user_id=user_id)
+    
+async def sub_unsub(callback_query):
+    status = db.get_value(name="subbed", user_id=callback_query.from_user.id)
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton(text="Subscribe", callback_data="sub"))
+    markup.add(types.InlineKeyboardButton(text="Unsubscribe", callback_data="unsub"))
+    await callback_query.message.edit_text(f"Ваш активный статус: <em>{STATUS.get(status)}</em>", reply_markup=markup)
 
-    await Parser.parse(callback_query.message, word, lang_from, lang_into, state=2)
+async def sub(callback_query):
+    db.update_value(name="subbed", value=True, user_id=callback_query.from_user.id)
+
+    status = "Subscribed"
+
+    await callback_query.answer("Success!")
+    await callback_query.message.edit_text(f"Ваш активный статус: <em>{status}</em>", reply_markup=None)
+
+async def unsub(callback_query):
+    db.update_value(name="subbed", value=False, user_id=callback_query.from_user.id)
+
+    status = "Unsubscribed"
+
+    await callback_query.answer("Success!")
+    await callback_query.message.edit_text(f"Ваш активный статус: <em>{status}</em>", reply_markup=None)
+
+
+async def learning_mode(callback_query):
+    user_id = callback_query.from_user.id
+    state = dp.current_state(user=user_id)
+    learning_mode = db.get_value("learning_mode", user_id)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+
+    for el in LEARNING_MODE.keys():
+        markup.insert(types.KeyboardButton(f"Mode {el}"))
+    markup.add(types.KeyboardButton("Cancel"))
+
+    await callback_query.message.reply(f"Доступные режимы обучения: \n\n1 - {LEARNING_MODE.get(1)}\n2 - {LEARNING_MODE.get(2)}\n3 - {LEARNING_MODE.get(3)}\n\n<b>Внимание!</b>\nВремя в каждом режиме прописано по МСК")
+    await callback_query.message.reply(f"Ваш активный режим обучения: <em>{LEARNING_MODE.get(learning_mode)}</em>\n\n<em><u>Нажмите на соответствующую кнопку, чтобы изменить режим</u></em>", reply_markup=markup)
+    await state.set_state(LearnerStates.all()[0])
 
 async def articles(callback_query):
     await callback_query.answer("Loading...")
@@ -111,10 +151,4 @@ async def indirect_speech(callback_query):
     markup.add(types.InlineKeyboardButton(text="Согласование времен | Sequence of tenses", url="https://www.native-english.ru/grammar/sequence-of-tenses"))
     await callback_query.message.answer("<b>Найденный материал по косвенной речи: </b>", reply_markup=markup)    
 
-async def translate_last(callback_query):
-    await callback_query.answer("Loading...")
-    lang_from = db.get_value(name="lang_from", user_id=callback_query.from_user.id)
-    lang_into = db.get_value(name="lang_into", user_id=callback_query.from_user.id)
-    word = db.get_value(name="word", user_id=callback_query.from_user.id)
 
-    await Parser.parse(callback_query.message, word, lang_from, lang_into, state=1)
