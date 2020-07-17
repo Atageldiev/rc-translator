@@ -3,8 +3,8 @@ from aiogram import types
 
 # import from my files
 from loader import db, Parser, dp
-from config import STATUS, LEARNING_MODE
-from utils import LearnerStates
+from data.config import LEARNING_MODE
+from utils.utils import LearnerStates
 
 async def show_examples(callback_query):
     user_id = callback_query.from_user.id
@@ -20,11 +20,14 @@ async def show_examples(callback_query):
     db.update_value(name="num", value=num+3, user_id=user_id)
     
 async def sub_unsub(callback_query):
-    status = db.get_value(name="subbed", user_id=callback_query.from_user.id)
+    if db.get_value(name="subbed", user_id=callback_query.from_user.id):
+        status = "Subscribed"
+    else:
+        status = "Unsubscribed"
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text="Subscribe", callback_data="sub"))
     markup.add(types.InlineKeyboardButton(text="Unsubscribe", callback_data="unsub"))
-    await callback_query.message.edit_text(f"Ваш активный статус: <em>{STATUS.get(status)}</em>", reply_markup=markup)
+    await callback_query.message.edit_text(f"Ваш активный статус: <em>{status}</em>", reply_markup=markup)
 
 async def sub(callback_query):
     db.update_value(name="subbed", value=True, user_id=callback_query.from_user.id)
@@ -42,7 +45,6 @@ async def unsub(callback_query):
     await callback_query.answer("Success!")
     await callback_query.message.edit_text(f"Ваш активный статус: <em>{status}</em>", reply_markup=None)
 
-
 async def learning_mode(callback_query):
     user_id = callback_query.from_user.id
     state = dp.current_state(user=user_id)
@@ -56,6 +58,9 @@ async def learning_mode(callback_query):
     await callback_query.message.reply(f"Доступные режимы обучения: \n\n1 - {LEARNING_MODE.get(1)}\n2 - {LEARNING_MODE.get(2)}\n3 - {LEARNING_MODE.get(3)}\n\n<b>Внимание!</b>\nВремя в каждом режиме прописано по МСК")
     await callback_query.message.reply(f"Ваш активный режим обучения: <em>{LEARNING_MODE.get(learning_mode)}</em>\n\n<em><u>Нажмите на соответствующую кнопку, чтобы изменить режим</u></em>", reply_markup=markup)
     await state.set_state(LearnerStates.all()[0])
+
+
+
 
 async def articles(callback_query):
     await callback_query.answer("Loading...")

@@ -1,11 +1,7 @@
 TOKEN = "1368801526:AAFoG3C84uthcDinURZ031e2WOt9fcUzTjM"
 ADMIN_ID = 399344900
-saveDB = -447382635
+chatSaveDB = -447382635
 HEADERS = {'user-agent': 'my-app/0.0.1'}
-STATUS = {
-        False: "Unsubscribed",
-        True: "Subscribed"
-}
 
 LEARNING_MODE = {
         1: "10:00 | 14:00 | 18:00",

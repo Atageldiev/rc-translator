@@ -1,13 +1,16 @@
 # import from required libraries
-from bs4 import BeautifulSoup as BS
+import logging
 import requests
-from aiogram import types
 import sqlite3
+
+from bs4 import BeautifulSoup as BS
+from aiogram import types
+
 # import from my files
-from config import HEADERS
+from data.config import HEADERS
 
 class Sqlighter():
-    def __init__(self, database="server.db"):
+    def __init__(self, database="data/server.db"):
         self.connection = sqlite3.connect(
             database=database, check_same_thread=False)
         self.cursor = self.connection.cursor()
@@ -113,6 +116,7 @@ class Parser():
                 markup.add(types.InlineKeyboardButton(text=text, url=url))
             await message.answer("<b>Вот что я нашел: </b>\n<em>Нажмите на соответствующую кнопку, чтобы перейти на сайт и почитать подробнее</em>", reply_markup=markup)
         else:
+            logging.critical("NATIVE ENGLISH HAS CHANGED ITS ARCHITECTURE")
             await message.answer("FATAL ERROR.\n\nPlease text my father\n\nLink is in my description")
     
     async def parse(self, message, word, lang_from, lang_into, state=1, num=3):

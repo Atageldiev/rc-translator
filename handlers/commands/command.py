@@ -1,11 +1,13 @@
+import logging
 # import from aoiogram
 from aiogram import types
 
 # import from my files
 from loader import dp, db, Parser
-from config import ADMIN_ID, LANGS, ALLOWED_LANGS, LEARNING_MODE
-from mymodule import answer_by_chat_id, saveDoc
-from utils import WordStates, AdminStates
+
+from data.config import LANGS, ALLOWED_LANGS, LEARNING_MODE
+
+from utils.utils import WordStates
 
 async def command_start(message):
     db.user_id_exists(user_id=message.from_user.id, name=message.from_user.first_name)
@@ -66,29 +68,9 @@ async def command_setsub(message):
     db.user_id_exists(user_id=message.from_user.id, name=message.from_user.first_name)
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text="Subscribe/unsubscribe", callback_data="sub_unsub"))
-    markup.add(types.InlineKeyboardButton(text="Change learning_mode", callback_data="learning_mode"))
-
+    markup.add(types.InlineKeyboardButton(text="Change learning mode", callback_data="learning_mode"))
 
     await message.answer("Что вы хотите сделать?", reply_markup=markup)
-
-async def admin_command_users(message):
-    users = []
-    for el in db.get_user_ids():
-        user_id = el[0]
-        users.append(user_id)
-    await answer_by_chat_id(chat_id=ADMIN_ID, text=f"Батя, бот ща насчитывает:---   <b>{len(users)}</b>   ---пользователей")
-
-async def admin_command_send_all(message):
-    state = dp.current_state(user=message.from_user.id)
-    await message.answer("Бать, напиши сообщение, которое хочешь отправить всем юзерам")
-
-    await state.set_state(AdminStates.all()[0])
-
-async def admin_command_setDB(message):
-    state = dp.current_state(user=message.from_user.id)
-
-    await message.answer("Отправьте файл, который надо загрузить")
-    await state.set_state(AdminStates.all()[1])
 
 async def state_choose_lang_into(message):
     lang_from = message.text 
@@ -140,22 +122,7 @@ async def state_send_result(message):
     await Parser.parse(message, word, lang_from, lang_into, state=1)
     await state.reset_state()
 
-async def admin_state_send_message_all(message):
-    for el in db.get_user_ids():
-        user_id = el[0]
-        await answer_by_chat_id(chat_id=user_id, text=message.text)
-
-    await answer_by_chat_id(chat_id=ADMIN_ID, text="Бать, я закончил")
-    await state.reset_state()
-
-async def admin_state_setDB(message):
-    try:
-        document = message.document
-        await saveDoc(document)
-    except:
-        await message.answer("Бать, чет пошло не так")
-
-async def learnerState_0(message):
+async def state_learningMode0(message):
     user_id = message.from_user.id
     state = dp.current_state(user=user_id)
     
@@ -176,6 +143,8 @@ async def learnerState_0(message):
 
     elif message.text == "Cancel":
         await message.answer("Cancelled", reply_markup=types.ReplyKeyboardRemove())
+
     else:
         await message.answer("ERROR, TRY AGAIN\n/setsub", reply_markup=types.ReplyKeyboardRemove())
+
     await state.reset_state()
