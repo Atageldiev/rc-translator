@@ -9,8 +9,6 @@ certifi==2020.4.5.1
 chardet==3.0.4
 idna==2.9
 multidict==4.7.6
-numpy==1.19.0
-opencv-python==4.2.0.34
 Pillow==7.1.2
 pycodestyle==2.6.0
 PyScreeze==0.1.26

@@ -22,7 +22,7 @@ def BackUp():
 
 async def setTask():
     logging.info("Task has been scheduled")
-    schedule.every().day.at("22:45").do(BackUp)
+    schedule.every().day.at("16:50").do(BackUp)
     while 1:
         schedule.run_pending()
         await asyncio.sleep(1)
