@@ -8,21 +8,22 @@ from datetime import datetime
 from aiogram import executor
 
 # import from my files
-from data.config import chatSaveDB, TOKEN
+from data.config import backUpChat, TOKEN
 
 teleBot = telebot.TeleBot(TOKEN)
     
 def BackUp():
     with open("data/server.db", "rb") as dbFile, open("mylog.log", "rb") as logFile:
-        teleBot.send_document(chat_id=chatSaveDB, data=dbFile, caption=f"База данных на {datetime.now()}")
-        teleBot.send_document(chat_id=chatSaveDB, data=logFile, caption=f"Логи на {datetime.now()}")
+        date = str(datetime.now()).rsplit(".")[0]
 
-    logging.info("DB has been succesfully sent")
+        teleBot.send_document(chat_id=backUpChat, data=dbFile, caption=f"База данных на {date}")
+        teleBot.send_document(chat_id=backUpChat, data=logFile, caption=f"Логи на {date}")
 
+        logging.info("Back up finished successfully")
 
 async def setTask():
     logging.info("Task has been scheduled")
-    schedule.every().day.at("16:50").do(BackUp)
+    schedule.every().day.at("19:55").do(BackUp)
     while 1:
         schedule.run_pending()
         await asyncio.sleep(1)

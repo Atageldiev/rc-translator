@@ -1,6 +1,6 @@
 TOKEN = "1368801526:AAFoG3C84uthcDinURZ031e2WOt9fcUzTjM"
 ADMIN_ID = 399344900
-chatSaveDB = -447382635
+backUpChat = -447382635
 HEADERS = {'user-agent': 'my-app/0.0.1'}
 
 LEARNING_MODE = {
