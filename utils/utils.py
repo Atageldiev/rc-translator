@@ -1,22 +1,23 @@
-from aiogram.utils.helper import Helper, HelperMode, ListItem
+from aiogram.dispatcher.filters.state import State, StatesGroup
 
+class WordStates(StatesGroup):
+    num = 3
 
-class WordStates(Helper):
-    mode = HelperMode.snake_case
-
-    STATE_CHOOSE_LANG_INTO = ListItem()
-    STATE_SEND_WORD = ListItem()
-    STATE_SEND_RESULT = ListItem()
-
-class AdminStates(Helper):
-    mode = HelperMode.snake_case
-
-    STATE_SEND_MESSAGE_ALL = ListItem()
-    
-    STATE_SETDB = ListItem()
+    lang_from = State()
+    lang_into = State()
+    word = State()
+    res = State()
     
 
-class LearnerStates(Helper):
-    mode = HelperMode.snake_case
+class AdminStates(StatesGroup):
+
+    message_one_chat_id = State()
+    message_one_text = State()
+
+    send_message_all = State()
+    setDB = State()
     
-    STATE_CHOOSE_MODE = ListItem()
+
+class LearningMode(StatesGroup):
+    
+    mode = State()

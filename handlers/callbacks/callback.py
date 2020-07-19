@@ -1,25 +1,37 @@
-# import from aiogram
+#---------------------------------------------------------------------------
+#   imports
+#---------------------------------------------------------------------------
+import logging
 from aiogram import types
+from aiogram.types import CallbackQuery
 
-# import from my files
 from loader import db, Parser, dp
 from data.config import LEARNING_MODE
-from utils.utils import LearnerStates
+from utils.utils import LearningMode
 
-async def show_examples(callback_query):
+
+#---------------------------------------------------------------------------
+#   Functions
+#---------------------------------------------------------------------------
+@dp.callback_query_handler(lambda c: c.data == "show_examples")
+async def show_examples(callback_query: CallbackQuery):
+    """
+    Sends 4 more examples, if available
+    If not, converts text of the message that button is pinned to into "All of the examples have already been shown"
+    """
     user_id = callback_query.from_user.id
+    data = await dp.storage.get_data(user=user_id)
 
-    word = db.get_value(name="word", user_id=user_id)
-    lang_from = db.get_value(name="lang_from", user_id=user_id)
-    lang_into = db.get_value(name="lang_into", user_id=user_id)
-    num = db.get_value(name="num", user_id=user_id)
+    num = data["num"]
 
     await callback_query.answer("Loading...")
-    await Parser.parse(callback_query.message, word, lang_from, lang_into, state=2, num=num)
+    await Parser.parse(callback_query.message, data, level=2, num=num)
     
-    db.update_value(name="num", value=num+3, user_id=user_id)
+    await dp.storage.update_data(user=callback_query.from_user.id, data={"num": num + 3})
     
-async def sub_unsub(callback_query):
+
+@dp.callback_query_handler(lambda c: c.data == "sub_unsub")
+async def sub_unsub(callback_query: CallbackQuery):
     if db.get_value(name="subbed", user_id=callback_query.from_user.id):
         status = "Subscribed"
     else:
@@ -29,7 +41,9 @@ async def sub_unsub(callback_query):
     markup.add(types.InlineKeyboardButton(text="Unsubscribe", callback_data="unsub"))
     await callback_query.message.edit_text(f"Ваш активный статус: <em>{status}</em>", reply_markup=markup)
 
-async def sub(callback_query):
+
+@dp.callback_query_handler(lambda c: c.data == "sub")
+async def sub(callback_query: CallbackQuery):
     db.update_value(name="subbed", value=True, user_id=callback_query.from_user.id)
 
     status = "Subscribed"
@@ -37,7 +51,8 @@ async def sub(callback_query):
     await callback_query.answer("Success!")
     await callback_query.message.edit_text(f"Ваш активный статус: <em>{status}</em>", reply_markup=None)
 
-async def unsub(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "unsub")
+async def unsub(callback_query: CallbackQuery):
     db.update_value(name="subbed", value=False, user_id=callback_query.from_user.id)
 
     status = "Unsubscribed"
@@ -45,9 +60,10 @@ async def unsub(callback_query):
     await callback_query.answer("Success!")
     await callback_query.message.edit_text(f"Ваш активный статус: <em>{status}</em>", reply_markup=None)
 
-async def learning_mode(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "learning_mode")
+async def learning_mode(callback_query: CallbackQuery):
     user_id = callback_query.from_user.id
-    state = dp.current_state(user=user_id)
+
     learning_mode = db.get_value("learning_mode", user_id)
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
 
@@ -57,70 +73,85 @@ async def learning_mode(callback_query):
 
     await callback_query.message.reply(f"Доступные режимы обучения: \n\n1 - {LEARNING_MODE.get(1)}\n2 - {LEARNING_MODE.get(2)}\n3 - {LEARNING_MODE.get(3)}\n\n<b>Внимание!</b>\nВремя в каждом режиме прописано по МСК")
     await callback_query.message.reply(f"Ваш активный режим обучения: <em>{LEARNING_MODE.get(learning_mode)}</em>\n\n<em><u>Нажмите на соответствующую кнопку, чтобы изменить режим</u></em>", reply_markup=markup)
-    await state.set_state(LearnerStates.all()[0])
+    await LearningMode.mode.set()
 
 
-
-
-async def articles(callback_query):
+#---------------------------------------------------------------------------
+#   Functions to handle inline-buttons that are created by /grammar command
+#---------------------------------------------------------------------------
+@dp.callback_query_handler(lambda c: c.data == "articles")
+async def articles(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-articles")
 
-async def verb(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "verb")
+async def verb(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     await Parser.parse_native_english(
         callback_query.message, "https://www.native-english.ru/grammar/english-verbs")
     
-async def noun(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "noun")
+async def noun(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-nouns")
 
-async def adjective(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "adjective")
+async def adjective(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-adjectives")
 
-async def pronoun(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "pronoun")
+async def pronoun(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-pronouns")
 
-async def numeral(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "numeral")
+async def numeral(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-numerals")
 
-async def adverb(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "adverb")
+async def adverb(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-adverbs")
 
-async def preposition(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "preposition")
+async def preposition(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-prepositions")
 
-async def conjunction(callback_query):
+
+@dp.callback_query_handler(lambda c: c.data == "conjunction")
+async def conjunction(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-conjunctions")
 
-async def particles(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "particles")
+async def particles(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text="Определение частицы | Definition of the particles", url="https://www.native-english.ru/grammar/english-particles"))
     markup.add(types.InlineKeyboardButton(text="Различие частиц | Difference of the particles", url="https://www.native-english.ru/grammar/particles-differ"))
     await callback_query.message.answer("<b>Найденный материал по частицам: </b>", reply_markup=markup)
 
-async def parts(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "parts")
+async def parts(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text="Главные | Main", callback_data="main_parts"))
     markup.add(types.InlineKeyboardButton(text="Второстепенные | Secondary", callback_data="secondary_parts"))
     await callback_query.message.answer("<b>Найденный материал по членам предложения: </b>", reply_markup=markup)
 
-async def main_parts(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "main_parts")
+async def main_parts(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text="Подлежащее | Subject", url="https://www.native-english.ru/grammar/english-subject"))
     markup.add(types.InlineKeyboardButton(text="Сказуемое | Predicate", url="https://www.native-english.ru/grammar/english-predicate"))
     await callback_query.message.answer("<b>Найденный материал по главным членам предложения: </b>", reply_markup=markup)
 
-async def secondary_parts(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "secondary_parts")
+async def secondary_parts(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text="Дополнение | Object", url="https://www.native-english.ru/grammar/english-object"))
@@ -129,7 +160,8 @@ async def secondary_parts(callback_query):
     markup.add(types.InlineKeyboardButton(text="Не члены предложения | Not parts of a sentence", url="https://www.native-english.ru/grammar/not-sentence"))
     await callback_query.message.answer("<b>Найденный материал по второстепенным членам предложения: </b>", reply_markup=markup)
 
-async def simple_sentences(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "simple_sentences")
+async def simple_sentences(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     markup = types.InlineKeyboardMarkup()    
     markup.add(types.InlineKeyboardButton(text="Определение | Definition", url="https://www.native-english.ru/grammar/simple-sentences"))
@@ -141,7 +173,8 @@ async def simple_sentences(callback_query):
     markup.add(types.InlineKeyboardButton(text="Восклицательное предложение | Exclamatory sentence", url="https://www.native-english.ru/grammar/exclamatory-sentences"))
     await callback_query.message.answer("<b>Найденный материал по простым предложениям: </b>", reply_markup=markup)
 
-async def complex_sentences(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "complex_sentences")
+async def complex_sentences(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text="Сложносочиненное | Compound", url="https://www.native-english.ru/grammar/compound-sentences"))
@@ -149,7 +182,8 @@ async def complex_sentences(callback_query):
     markup.add(types.InlineKeyboardButton(text="Условное | Conditional", url="https://www.native-english.ru/grammar/conditional-sentences"))
     await callback_query.message.answer("<b>Найденный материал по сложным предложениям: </b>", reply_markup=markup)    
 
-async def indirect_speech(callback_query):
+@dp.callback_query_handler(lambda c: c.data == "indirect_speech")
+async def indirect_speech(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text="Определение | Definition", url="https://www.native-english.ru/grammar/indirect-speech"))
