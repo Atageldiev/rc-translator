@@ -54,13 +54,6 @@ async def setDB(message: Message):
     await message.answer("Отправьте файл, который надо загрузить")
     await state.set_state(AdminStates.setDB)
 
-@dp.message_handler(lambda message: message.from_user.id != ADMIN_ID)
-async def empty_messages(message: Message):
-    from_user = message.from_user
-
-    await bot.send_message(chat_id=ADMIN_ID, text=f"<b>{from_user.first_name}</b> says:\n'<em>{message.text}</em>'\nuser_id:{from_user.id}",
-                           disable_notification=True)
-
 
 #---------------------------------------------------------------------------
 #   States

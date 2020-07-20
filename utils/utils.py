@@ -3,11 +3,17 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 class WordStates(StatesGroup):
     num = 3
 
-    lang_from = State()
-    lang_into = State()
+    src = State()
+    dest = State()
     word = State()
     res = State()
     
+
+class SentenceStates(StatesGroup):
+    src = State()
+    dest = State()
+    sentence = State()
+    res = State()
 
 class AdminStates(StatesGroup):
 

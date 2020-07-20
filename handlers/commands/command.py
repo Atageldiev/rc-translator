@@ -6,19 +6,19 @@ import logging
 from aiogram import types
 from aiogram.types import Message
 
-from loader import dp, db
+from loader import dp, db, translator
 from data.config import LANGS
-from utils.utils import WordStates
+from utils.utils import WordStates, SentenceStates
 
 
 #---------------------------------------------------------------------------
-#   Functions
+#   Handlers
 #---------------------------------------------------------------------------
 @dp.message_handler(commands="start")
 async def start(message: Message):
     db.user_id_exists(user_id=message.from_user.id, name=message.from_user.first_name)
 
-    await message.reply("Привет, это бот для поиска переводов для различных слов\n/translate")
+    await message.reply("Привет, это бот для поиска переводов для различных слов\n/word\n/sentence")
 
 @dp.message_handler(commands="grammar")
 async def grammar(message: Message):
@@ -48,6 +48,9 @@ async def grammar(message: Message):
 async def rating(message: Message):
     user_id = message.from_user.id
     name = message.from_user.first_name
+
+    db.user_id_exists(user_id=user_id, name=name)
+
     words_translated = db.get_value(name="words_translated", user_id=user_id)
     grammar_used = db.get_value(name="grammar_used", user_id=user_id)
 
@@ -65,7 +68,7 @@ async def setsub(message: Message):
 
     await message.answer("Что вы хотите сделать?", reply_markup=markup)
 
-@dp.message_handler(commands="translate")
+@dp.message_handler(commands="word")
 async def translate(message: Message):
     await dp.storage.update_data(user=message.from_user.id, data={"num": 3})
     db.user_id_exists(user_id=message.from_user.id, name=message.from_user.first_name)
@@ -74,5 +77,41 @@ async def translate(message: Message):
     for element in LANGS:
         markup.insert(element)
 
-    await WordStates.lang_into.set()
+    await WordStates.dest.set()
     await message.answer("Выберите язык <b><u>с которого</u></b> хотите перевести", reply_markup=markup)
+
+@dp.message_handler(commands="sentence")
+async def sentence(message: Message):
+    db.user_id_exists(user_id=message.from_user.id, name=message.from_user.first_name)
+    markup = types.ReplyKeyboardMarkup(row_width=3, one_time_keyboard =True, resize_keyboard =True)
+    for el in LANGS:
+        markup.insert(el)
+    await message.answer("Выберите язык <b><u>с которого</u></b> хотите перевести", reply_markup=markup)
+    await SentenceStates.dest.set()
+
+@dp.message_handler()
+async def empty_messages(message: Message):
+    data = await dp.storage.get_data(user=message.from_user.id)
+    msg = message.text
+    if data != {}:
+        src = data["src"]
+        dest = data["dest"]
+        res = translator.translate(text=msg, dest=dest, src=src).text
+
+        await message.answer(f"<b><u>Вы последний раз переводили:</u></b>\n\
+    <b>С языка</b> - {src}\n\
+    <b>На язык</b> - {dest}\n\
+    <b>Результат:</b> \n\n\
+        <em>'{res}'</em>\n\n/sentence")
+    else:
+        res_ru = translator.translate(text=msg, dest="ru").text
+        res_en = translator.translate(text=msg, dest="en").text
+        res_fr = translator.translate(text=msg, dest="fr").text
+        res_de = translator.translate(text=msg, dest="de").text
+        res_es = translator.translate(text=msg, dest="es").text
+        await message.answer(f"Результаты:\n\
+    <b>Русский</b>  - {res_ru}\n\
+    <b>English</b>  - {res_en}\n\
+    <b>Français</b> - {res_fr}\n\
+    <b>Deutsch</b>  - {res_de}\n\
+    <b>Español</b>  - {res_es}\n\n/sentence")

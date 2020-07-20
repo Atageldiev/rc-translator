@@ -3,26 +3,26 @@ from aiogram import types
 from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
 
-from loader import dp, db, Parser
-from data.config import LANGS, ALLOWED_LANGS
-from utils.utils import WordStates, LearningMode
+from loader import dp, db, Parser, translator
+from data.config import LANGS, ALLOWED_LANGS, LANGCODES
+from utils.utils import WordStates, LearningMode, SentenceStates
 
-@dp.message_handler(state=WordStates.lang_into)
-async def state_lang_into(message: Message, state: FSMContext):
-    lang_from = message.text
-    if lang_from in LANGS:
+@dp.message_handler(state=WordStates.dest)
+async def state_dest(message: Message, state: FSMContext):
+    src = message.text
+    if src in LANGS:
         user_id = message.from_user.id
         markup = types.ReplyKeyboardMarkup(
             resize_keyboard=True, row_width=3, one_time_keyboard=True)
 
-        for element in ALLOWED_LANGS.get(lang_from):
+        for element in ALLOWED_LANGS.get(src):
             markup.insert(element)
 
         await message.answer("Выберите язык <b><u>на который</u></b> хотите перевести", reply_markup=markup)
-        await state.update_data(lang_from=lang_from)
+        await state.update_data(src=src)
         await WordStates.next()
     else:
-        await message.answer("ERROR, TRY AGAIN\n/translate", reply_markup=types.ReplyKeyboardRemove())
+        await message.answer("ERROR, TRY AGAIN\n/word", reply_markup=types.ReplyKeyboardRemove())
         await state.finish()
 
 @dp.message_handler(state=WordStates.word)
@@ -30,17 +30,17 @@ async def state_word(message: Message, state: FSMContext):
 
     user_id = message.from_user.id
     data = await state.get_data()
-    lang_from = data["lang_from"]
-    lang_into = message.text
+    src = data["src"]
+    dest = message.text
 
-    if lang_into in ALLOWED_LANGS.get(lang_from):
+    if dest in ALLOWED_LANGS.get(src):
         await WordStates.next()
-        await state.update_data(lang_into=message.text)
+        await state.update_data(dest=message.text)
 
         await message.answer("Напишите слово, которое хотите перевести",
                              reply_markup=types.ReplyKeyboardRemove())
     else:
-        await message.answer("ERROR, TRY AGAIN\n/translate",
+        await message.answer("ERROR, A SUPPORTED LANGUAGE IS REQUIRED\n/word",
                              reply_markup=types.ReplyKeyboardRemove())
         await state.finish()
 
@@ -85,3 +85,40 @@ async def state_choose_learningMode(message: Message, state: FSMContext):
 
     await state.finish()
 
+
+@dp.message_handler(state=SentenceStates.dest)
+async def state_sentence(message: Message, state: FSMContext):
+    text = message.text
+    if text in LANGS:
+        await state.update_data(src=LANGCODES.get(text))
+        markup = types.ReplyKeyboardMarkup(row_width=3, one_time_keyboard=True, resize_keyboard=True)
+        for el in LANGS:
+            markup.insert(el)
+        await message.answer("Выберите язык <b><u>на который</u></b> хотите перевести", reply_markup=markup)
+        await SentenceStates.next()
+    else:
+        await message.answer("ERROR, A SUPPORTED LANGUAGE IS REQUIRED\n/sentence",
+                             reply_markup=types.ReplyKeyboardRemove())
+        await state.finish()
+
+@dp.message_handler(state=SentenceStates.sentence)
+async def state_sentence(message: Message, state: FSMContext):
+    if message.text in LANGS:
+        await state.update_data(dest=LANGCODES.get(message.text))
+        await message.answer("Напишите предложение")
+        await SentenceStates.next()
+    else:
+        await message.answer("ERROR, A SUPPORTED LANGUAGE IS REQUIRED\n/sentence",
+                             reply_markup=types.ReplyKeyboardRemove())
+        await state.finish()
+
+@dp.message_handler(state=SentenceStates.res)
+async def state_sentence(message: Message, state: FSMContext):
+    await state.update_data(sentence=message.text)
+    data = await state.get_data()
+
+    text = translator.translate(data["sentence"], src=data["src"], dest=data["dest"]).text
+
+    await message.answer(f"<b>Вот результаты:</b> \n\n<em>'{text}'</em>", reply_markup=types.ReplyKeyboardRemove())
+    await state.reset_state(with_data=False)
+        

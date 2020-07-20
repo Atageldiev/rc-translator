@@ -74,11 +74,11 @@ class Parser():
         return " ".join(text.split())
     
     def __getHtml(self, data):
-        lang_from = data["lang_from"]
-        lang_into = data["lang_into"]
+        src = data["src"]
+        dest = data["dest"]
         word = data["word"]
 
-        URL = f"https://context.reverso.net/перевод/{lang_from}-{lang_into}/{word}"
+        URL = f"https://context.reverso.net/перевод/{src}-{dest}/{word}"
         response = requests.get(URL, headers=HEADERS)
         html = BS(response.content, "html.parser")
         return html
@@ -143,6 +143,13 @@ class Parser():
             logging.critical("NATIVE ENGLISH HAS CHANGED ITS ARCHITECTURE")
             await message.answer("FATAL ERROR.\n\nPlease text my father\n\nLink is in my description")
     
+    async def parse_sentence(self, message, text):
+        URL = f"https://translate.google.com/#view=home&op=translate&sl=en&tl=ru&text={text}"
+        response = requests.get(URL, headers=HEADERS)
+        html = BS(response.content, "html.parser")
+        html = html.select(".tlid-translation.translation > span")
+        print(html)
+
     async def parse(self, message, data, level=1, num=3):
         """
         Parent function that calls functions __parse_translations() and __parse_examples
@@ -156,7 +163,4 @@ class Parser():
         elif level==2:
             html = self.__getHtml(data)
             await self.__parse_examples(html, message, num)
-        # except:
-        #     logging.warning("smth went wrong with states")
-        #     await message.answer("ERROR, TEXT MY FATHER\n\nLink in the descripiton")
             
