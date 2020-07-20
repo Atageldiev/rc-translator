@@ -4,7 +4,7 @@
 import logging
 
 # filename = "data/bot.log",
-logging.basicConfig(level=logging.INFO,
+logging.basicConfig(filename="data/bot.log", level=logging.INFO,
                     format='ID-%(process)d:%(asctime)s:%(levelname)s - [%(filename)s:%(lineno)d] - %(message)s', 
                     datefmt='%d-%b-%y %H:%M:%S')
 
