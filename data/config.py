@@ -1,8 +1,8 @@
 #---------------------------------------------------------------------------
 #   Variables
 #---------------------------------------------------------------------------
-# TOKEN = "1368801526:AAFoG3C84uthcDinURZ031e2WOt9fcUzTjM"
-TOKEN = "1397404758:AAEBfHXgaxWM0j-FGnsFsUxQjo4sMuyEz5Q" # test token
+TOKEN = "1368801526:AAFoG3C84uthcDinURZ031e2WOt9fcUzTjM"
+# TOKEN = "1397404758:AAEBfHXgaxWM0j-FGnsFsUxQjo4sMuyEz5Q" # test token
 
 ADMIN_ID = 399344900
 BACK_UP_CHAT = -447382635
