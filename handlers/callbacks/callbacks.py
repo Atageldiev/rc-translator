@@ -5,9 +5,9 @@ import logging
 from aiogram import types
 from aiogram.types import CallbackQuery
 
-from loader import db, Parser, dp
+from loader import db, parser, dp
 from data.config import LEARNING_MODE
-from utils.utils import LearningMode
+from utils import LearningMode
 
 
 #---------------------------------------------------------------------------
@@ -25,7 +25,7 @@ async def show_examples(callback_query: CallbackQuery):
     num = data["num"]
 
     await callback_query.answer("Loading...")
-    await Parser.parse(callback_query.message, data, level=2, num=num)
+    await parser.parse_examples(data, callback_query.message, num)
     
     await dp.storage.update_data(user=callback_query.from_user.id, data={"num": num + 3})
     
@@ -82,49 +82,49 @@ async def learning_mode(callback_query: CallbackQuery):
 @dp.callback_query_handler(lambda c: c.data == "articles")
 async def articles(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
-    await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-articles")
+    await parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-articles")
 
 @dp.callback_query_handler(lambda c: c.data == "verb")
 async def verb(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
-    await Parser.parse_native_english(
+    await parser.parse_native_english(
         callback_query.message, "https://www.native-english.ru/grammar/english-verbs")
     
 @dp.callback_query_handler(lambda c: c.data == "noun")
 async def noun(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
-    await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-nouns")
+    await parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-nouns")
 
 @dp.callback_query_handler(lambda c: c.data == "adjective")
 async def adjective(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
-    await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-adjectives")
+    await parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-adjectives")
 
 @dp.callback_query_handler(lambda c: c.data == "pronoun")
 async def pronoun(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
-    await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-pronouns")
+    await parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-pronouns")
 
 @dp.callback_query_handler(lambda c: c.data == "numeral")
 async def numeral(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
-    await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-numerals")
+    await parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-numerals")
 
 @dp.callback_query_handler(lambda c: c.data == "adverb")
 async def adverb(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
-    await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-adverbs")
+    await parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-adverbs")
 
 @dp.callback_query_handler(lambda c: c.data == "preposition")
 async def preposition(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
-    await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-prepositions")
+    await parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-prepositions")
 
 
 @dp.callback_query_handler(lambda c: c.data == "conjunction")
 async def conjunction(callback_query: CallbackQuery):
     await callback_query.answer("Loading...")
-    await Parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-conjunctions")
+    await parser.parse_native_english(callback_query.message, "https://www.native-english.ru/grammar/english-conjunctions")
 
 @dp.callback_query_handler(lambda c: c.data == "particles")
 async def particles(callback_query: CallbackQuery):
