@@ -1,6 +1,6 @@
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-class WordStates(StatesGroup):
+class Word(StatesGroup):
     num = 3
 
     src = State()
@@ -8,14 +8,13 @@ class WordStates(StatesGroup):
     word = State()
     res = State()
     
-
-class SentenceStates(StatesGroup):
+class Sentence(StatesGroup):
     src = State()
     dest = State()
     sentence = State()
     res = State()
 
-class AdminStates(StatesGroup):
+class Admin(StatesGroup):
 
     message_one_chat_id = State()
     message_one_text = State()
@@ -23,7 +22,6 @@ class AdminStates(StatesGroup):
     send_message_all = State()
     setDB = State()
     
-
 class LearningMode(StatesGroup):
     
     mode = State()

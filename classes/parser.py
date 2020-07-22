@@ -1,79 +1,17 @@
-#---------------------------------------------------------------------------
-#   imports
-#---------------------------------------------------------------------------
 import logging
 import requests
-import sqlite3
 
 from bs4 import BeautifulSoup as BS
-from aiogram import types
+
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from data.config import HEADERS
-
-# Class to work with database
-class Database():
-    """
-    This class is created to work with DB
-    """
-    def __init__(self, database="data/server.db"):
-        self.connection = sqlite3.connect(
-            database=database, check_same_thread=False)
-        self.cursor = self.connection.cursor()
-
-    def create_table_status(self):
-        """Create table `status`"""
-        with self.connection:
-            self.cursor.execute("""CREATE TABLE IF NOT EXISTS `status`(
-                user_id INT,
-                name STRING,
-                words_translated INT,
-                grammar_used INT,
-                subbed BOOL,
-                learning_mode INT
-                )
-                """)
-
-    def user_id_exists(self, user_id, name):
-        """Checks if the user is already in DB, adds if he is not"""
-        with self.connection:
-            self.cursor.execute(f"""SELECT `user_id` FROM `status` WHERE `user_id`={user_id}""")
-            if self.cursor.fetchone() is None:
-                self.cursor.execute(f"""INSERT INTO `status` VALUES (?, ?, ?, ?, ?, ?)""", (user_id, name, 0, 0, False, 1))
-    
-    def get_user_ids(self):
-        """Get list of all `user_ids` in DB"""
-        with self.connection:
-            return self.cursor.execute(f"""SELECT `user_id` FROM status""").fetchall()
-
-    def get_value(self, name, user_id):
-        """Get value from DB"""
-        with self.connection:
-            for i in self.cursor.execute(f"""SELECT {name} FROM `status` WHERE `user_id`={user_id}"""):
-                return i[0]
-    
-    def get_subscribers(self):
-        """Get list of subs, whose status `sub` is True"""
-        with self.connection:
-            return self.cursor.execute(f"""SELECT `user_id` FROM `status` WHERE `sub`=True""").fetchall()
-
-    def update_value(self, name, value, user_id):
-        """Update some value in DB"""
-        with self.connection:
-            try:
-                self.cursor.execute(
-                    f"""UPDATE status SET {name}={value} WHERE `user_id`={user_id}""")
-            except:
-                self.cursor.execute(f"""UPDATE `status` SET {name}='{value}' WHERE `user_id` = {user_id}""")
-
 # Class for parsing
 class Parser():
-    def __init__(self):
-        pass
-
     def __getText(self, text):
         """Returns a text without any extra spaces anywhere"""
         return " ".join(text.split())
-    
+
     def __getHtml(self, data):
         src = data["src"]
         dest = data["dest"]
@@ -96,8 +34,9 @@ class Parser():
                 text2 = el.select('.ltr.trg')
                 msg += "---" + self.__getText(text1[0].text) + "\n"
                 msg += "---" + self.__getText(text2[0].text) + "\n\n"
-            markup = types.InlineKeyboardMarkup()
-            markup.add(types.InlineKeyboardButton(text="Еще примеры", callback_data="show_examples"))
+            markup = InlineKeyboardMarkup()
+            markup.add(InlineKeyboardButton(
+                text="Еще примеры", callback_data="show_examples"))
             if msg != "<b>Вот примеры с этим словом:</b>\n":
                 await message.answer(msg, reply_markup=markup)
             else:
@@ -116,15 +55,17 @@ class Parser():
         html = self.__getHtml(data)
 
         if html.select('.translation.ltr'):
-            markup = types.InlineKeyboardMarkup(row_width=3, inline_keyboard=True)
+            markup = InlineKeyboardMarkup(
+                row_width=3, inline_keyboard=True)
 
             for el in html.select('.translation.ltr')[:6]:
                 text = self.__getText(el.text)
                 url = "https://context.reverso.net" + str(el.get('href'))
 
-                markup.insert(types.InlineKeyboardButton(text=text, url=url))
+                markup.insert(InlineKeyboardButton(text=text, url=url))
 
-            markup.add(types.InlineKeyboardButton(text="Показать примеры", callback_data="show_examples"))
+            markup.add(InlineKeyboardButton(
+                text="Показать примеры", callback_data="show_examples"))
 
             await message.answer("<b>Вот все переводы этого слова</b>\n<em><u>Нажмите на соответствующую кнопку, чтобы перейти на сайт, чтобы увидеть примеры только с этим словом:</u></em>", reply_markup=markup)
         else:
@@ -141,19 +82,18 @@ class Parser():
         if html:
             del html[-3:]
 
-            markup = types.InlineKeyboardMarkup()
-            markup.add(types.InlineKeyboardButton(
+            markup = InlineKeyboardMarkup()
+            markup.add(InlineKeyboardButton(
                 text="Определение | Definition", url=url))
 
             for el in html:
                 url = "https://www.native-english.ru" + str(el.get('href'))
                 text = self.__getText(el.text)
 
-                markup.add(types.InlineKeyboardButton(text=text, url=url))
+                markup.add(InlineKeyboardButton(text=text, url=url))
 
             await message.answer("<b>Вот что я нашел: </b>\n<em>Нажмите на соответствующую кнопку, чтобы перейти на сайт и почитать подробнее</em>", reply_markup=markup)
         else:
             logging.critical("NATIVE ENGLISH HAS CHANGED ITS ARCHITECTURE")
-            
+
             await message.answer("FATAL ERROR.\n\nPlease text my father\n\nLink is in my description")
-            

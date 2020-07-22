@@ -1,1 +1,1 @@
-from .utils import WordStates, SentenceStates, AdminStates, LearningMode
+from .utils import Word, Sentence, Admin, LearningMode

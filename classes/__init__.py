@@ -1,1 +1,2 @@
-from .myclass import Database, Parser
+from .database import Database
+from .parser import Parser
