@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters.builtin import CommandStart
 from loader import dp, db
 
 
-@dp.message_handler(commands="start")
+@dp.message_handler(CommandStart())
 async def start(message: Message):
     db.user_id_exists()
 

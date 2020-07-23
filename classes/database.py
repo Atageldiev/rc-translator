@@ -14,7 +14,9 @@ class Database():
 
     def __init__(self, database="data/server.db"):
         self.connection = sqlite3.connect(
-            database=database, check_same_thread=False)
+            database=database, 
+            check_same_thread=False
+            )
         logging.info("Data base has been created")
 
         self.cursor = self.connection.cursor()

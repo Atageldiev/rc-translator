@@ -1,13 +1,16 @@
-from aiogram.types import ChatActions, Message, ReplyKeyboardRemove
-from aiogram.dispatcher.filters.builtin import CommandStart
+from aiogram.types import (
+    Message, ChatActions, 
+    ReplyKeyboardRemove as RKR
+    )
+from aiogram.dispatcher.filters.builtin import Command, Text
 
-from loader import dp, db
+from loader import dp
 
 
-@dp.message_handler(commands="cancel")
-@dp.message_handler(lambda message: message.text.lower() == "cancel")
+@dp.message_handler(Command("cancel"), state="*")
+@dp.message_handler(text=("Cancel", "cancel"))
 async def cancel(message: Message):
     await ChatActions.typing()
     await dp.storage.reset_state(user=message.from_user.id)
-    await message.reply("Cancelled...", reply_markup=None)
-    await message.reply("Keyboard removed", reply_markup=ReplyKeyboardRemove())
+    await message.reply("Cancelled...", reply_markup=RKR())
+    

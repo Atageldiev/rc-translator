@@ -10,11 +10,9 @@ chardet==3.0.4
 googletrans==3.0.0
 idna==2.9
 multidict==4.7.6
-Pillow==7.1.2
 pycodestyle==2.6.0
-PyScreeze==0.1.26
 pyTelegramBotAPI==3.7.2
-pytesseract==0.3.4
+python-dotenv==0.14.0
 PyTweening==1.0.3
 pytz==2020.1
 requests==2.7.0

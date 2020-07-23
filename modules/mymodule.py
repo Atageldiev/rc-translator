@@ -9,7 +9,8 @@ import logging
 from datetime import datetime
 from aiogram import executor
 
-from data.config import BACK_UP_CHAT, TOKEN
+from loader import translator
+from data.config import BACK_UP_CHAT, TOKEN, LANGCODES
 
 
 #---------------------------------------------------------------------------
@@ -21,6 +22,13 @@ teleBot = telebot.TeleBot(TOKEN)
 #---------------------------------------------------------------------------
 #   Functions
 #---------------------------------------------------------------------------
+def get_translation(text, data: dict = {}, dest: str = ""):
+    if not dest:
+        dest = LANGCODES.get(data["dest"])
+        
+    return translator.translate(text, dest=dest).text
+
+
 def BackUp():                                                               # back up db and log files
     with open("data/server.db", "rb") as dbFile, open("data/bot.log", "rb") as logFile:
         date = str(datetime.now()).rsplit(".")[0]

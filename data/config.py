@@ -1,16 +1,15 @@
+import os
+from dotenv import load_dotenv
 
-#---------------------------------------------------------------------------
-#   Variables
-#---------------------------------------------------------------------------
-TOKEN = "1368801526:AAFoG3C84uthcDinURZ031e2WOt9fcUzTjM"
-# TOKEN = "1397404758:AAEBfHXgaxWM0j-FGnsFsUxQjo4sMuyEz5Q" # test token
+load_dotenv()
 
-ADMIN_ID = 399344900
-BACK_UP_CHAT = -447382635
+TOKEN = os.getenv("MAIN_TOKEN")
+# TOKEN = os.getenv("TEST_TOKEN") # test token
 
-#---------------------------------------------------------------------------
-#   lists/dicts/sets/tuples
-#---------------------------------------------------------------------------
+ADMIN_ID = os.getenv("ADMIN_ID")
+BACK_UP_CHAT = os.getenv("BACK_UP_CHAT")
+
+
 HEADERS = {'user-agent': 'my-app/0.0.1'}
 
 LANGCODES = {

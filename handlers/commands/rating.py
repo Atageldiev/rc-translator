@@ -1,9 +1,10 @@
 from aiogram.types import Message, ChatActions
+from aiogram.dispatcher.filters import Command
 
 from loader import dp, db 
 
 
-@dp.message_handler(commands="rating")
+@dp.message_handler(Command("rating"))
 async def rating(message: Message):
     user_id = message.from_user.id
     name = message.from_user.first_name

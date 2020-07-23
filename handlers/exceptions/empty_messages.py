@@ -1,7 +1,8 @@
 from aiogram.types import Message, ChatActions
 
-from loader import dp, translator
-
+from loader import dp
+from modules import get_translation
+from data.config import LANGCODES
 
 @dp.message_handler()
 async def empty_messages(message: Message):
@@ -9,22 +10,20 @@ async def empty_messages(message: Message):
     msg = message.text
 
     await ChatActions.typing()
-    try:
-        src = data["src"]
+    if data:
         dest = data["dest"]
-        res = translator.translate(text=msg, dest=dest, src=src).text
+        res = get_translation(msg, data=data)
 
-        await message.answer(f"<b><u>Вы последний раз переводили:</u></b>\n\
-    <b>С языка</b> - {src}\n\
+        await message.answer(f"<b><u>Вы в последний раз переводили:</u></b>\n\
     <b>На язык</b> - {dest}\n\
     <b>Результат:</b> \n\n\
-        <em>'{res}'</em>\n\n/sentence")
-    except:
-        res_ru = translator.translate(text=msg, dest="ru").text
-        res_en = translator.translate(text=msg, dest="en").text
-        res_fr = translator.translate(text=msg, dest="fr").text
-        res_de = translator.translate(text=msg, dest="de").text
-        res_es = translator.translate(text=msg, dest="es").text
+        <em>'{res}'</em>\n\n/sentence\n/reset - чтобы сбросить")
+    else:
+        res_ru = get_translation(text=msg, dest="ru")
+        res_en = get_translation(text=msg, dest="en")
+        res_fr = get_translation(text=msg, dest="fr")
+        res_de = get_translation(text=msg, dest="de")
+        res_es = get_translation(text=msg, dest="es")
 
         await message.answer(f"Результаты:\n\
     <b>Русский</b>  - {res_ru}\n\

@@ -1,1 +1,4 @@
-from .utils import Word, Sentence, Admin, LearningMode
+from .utils import (
+    Word, Sentence, 
+    Admin, LearningMode
+    )
