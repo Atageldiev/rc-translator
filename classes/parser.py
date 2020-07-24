@@ -22,29 +22,30 @@ class Parser():
         html = BS(response.content, "html.parser")
         return html
 
-    async def parse_examples(self, data, message, num):
+    def parse_examples(self, data, num):
         """Parses only examples from context.reverso.net"""
         html = self.__getHtml(data)
+        word = data["word"]
 
         if html.select('.example'):
-            msg = "<b>Вот примеры с этим словом:</b>\n"
+            msg = f"<b>Вот примеры со словом <em><u>{word}</u></em>:</b>\n"
+            
             html = html.select('.example')[num-3:num+1]
+            
             for el in html:
                 text1 = el.select('.ltr.src')
                 text2 = el.select('.ltr.trg')
+                
                 msg += "---" + self.__getText(text1[0].text) + "\n"
                 msg += "---" + self.__getText(text2[0].text) + "\n\n"
+                
             markup = InlineKeyboardMarkup()
-            markup.add(InlineKeyboardButton(
-                text="Еще примеры", callback_data="show_examples"))
-            if msg != "<b>Вот примеры с этим словом:</b>\n":
-                await message.answer(msg, reply_markup=markup)
-            else:
-                await message.edit_text("Уже показаны все примеры", reply_markup=None)
+            markup.add(InlineKeyboardButton(text="Еще примеры", callback_data="show_examples"))
+            return msg, markup
         else:
-            await message.answer("ERROR, TRY AGAIN\n/translate")
+            return "ERROR, TRY AGAIN\n/word", None
 
-    async def parse_translations(self, data, message):
+    def parse_translations(self, data):
         """
         Parses only translations from context.reverso.net
         Creates buttons and sends them directly to the user:
@@ -53,10 +54,11 @@ class Parser():
             Max number of buttons - 6
         """
         html = self.__getHtml(data)
-
+        word = data["word"]
+        msg = f"<b>Вот переводы слова <em><u>{word}</u></em> </b>\n<em><u>Нажмите на соответствующую кнопку, чтобы перейти на сайт и увидеть примеры только с этим словом:</u></em>"
+        
         if html.select('.translation.ltr'):
-            markup = InlineKeyboardMarkup(
-                row_width=3, inline_keyboard=True)
+            markup = InlineKeyboardMarkup(row_width=3, inline_keyboard=True)
 
             for el in html.select('.translation.ltr')[:6]:
                 text = self.__getText(el.text)
@@ -64,12 +66,11 @@ class Parser():
 
                 markup.insert(InlineKeyboardButton(text=text, url=url))
 
-            markup.add(InlineKeyboardButton(
-                text="Показать примеры", callback_data="show_examples"))
+            markup.add(InlineKeyboardButton(text="Показать примеры", callback_data="show_examples"))
 
-            await message.answer("<b>Вот все переводы этого слова</b>\n<em><u>Нажмите на соответствующую кнопку, чтобы перейти на сайт, чтобы увидеть примеры только с этим словом:</u></em>", reply_markup=markup)
+            return msg, markup
         else:
-            await message.answer("ERROR, TRY AGAIN\n/translate")
+            return "ERROR, TRY AGAIN\n/word", None
 
     async def parse_native_english(self, message, url):
         """

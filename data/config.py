@@ -3,12 +3,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TOKEN = os.getenv("MAIN_TOKEN")
-# TOKEN = os.getenv("TEST_TOKEN") # test token
+# TOKEN = os.getenv("MAIN_TOKEN")
+TOKEN = os.getenv("TEST_TOKEN") # test token
 
 ADMIN_ID = os.getenv("ADMIN_ID")
-BACK_UP_CHAT = os.getenv("BACK_UP_CHAT")
 
+DB_USER=os.getenv("DB_USER")
+DB_PASS=os.getenv("DB_PASS")
+DB_DB=os.getenv("DB_DB")
 
 HEADERS = {'user-agent': 'my-app/0.0.1'}
 
@@ -26,9 +28,8 @@ LANGCODES = {
 }
 
 LEARNING_MODE = {
-        1: "10:00 | 14:00 | 18:00",
-        2: "10:00 | 13:00 | 16:00",
-        3: "10:00 | 15:00 | 20:00"
+    1: "10:00 | 15:00 | 20:00",
+    2: "11:00 | 15:00 | 19:00"
 }
 
 ALLOWED_LANGS = {

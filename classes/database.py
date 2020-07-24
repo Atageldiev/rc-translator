@@ -2,39 +2,26 @@
 #   imports
 #---------------------------------------------------------------------------
 import logging
-import sqlite3
+import pymongo
+from pymongo import MongoClient
 
 from aiogram.types import User
 
+from data.config import DB_USER, DB_PASS, DB_DB
 # Class to work with database
 
 
-class Database():
-    """This class is created to work with DB"""
+class DB_API():
+    """Class to work with DB"""
 
-    def __init__(self, database="data/server.db"):
-        self.connection = sqlite3.connect(
-            database=database, 
-            check_same_thread=False
-            )
-        logging.info("Data base has been created")
+    def __init__(self):
+        cluster = MongoClient(
+            f"mongodb+srv://{DB_USER}:\
+{DB_PASS}@rc-translator.d217k.mongodb.net/\
+{DB_DB}?retryWrites=true&w=majority")
 
-        self.cursor = self.connection.cursor()
-        logging.info("Cursor has been defined")
-
-    def create_table_status(self):
-        """Create table `status`"""
-        with self.connection:
-            self.cursor.execute("""CREATE TABLE IF NOT EXISTS `status`(
-                user_id INT,
-                name STRING,
-                words_translated INT DEFAULT 0,
-                grammar_used INT DEFAULT 0,
-                subbed BOOL DEFAULT False,
-                learning_mode INT DEFAULT 1
-                )
-                """)
-        logging.info("Table `status` has been created")
+        db = cluster["rc-translator"]
+        self.collection = db["status"]
 
     def user_id_exists(self):
         """Checks if the user is already in DB, adds if he is not"""
@@ -42,49 +29,128 @@ class Database():
 
         name = user.first_name
         user_id = user.id
-        args = (user_id, name)
 
-        with self.connection:
-            self.cursor.execute(
-                f"""SELECT `user_id` FROM `status` WHERE `user_id`={user_id}""")
-            if self.cursor.fetchone() is None:
-                self.cursor.execute(
-                    f"""INSERT INTO `status`(user_id, name) VALUES (?, ?)""", args)
-                logging.info(f"User {name} has been added to DB")
+        if not self.collection.find_one(
+            {
+                "_id": user_id
+            }
+        ):
+            self.collection.insert_one(
+                {
+                    # user-info:
+                    "_id": user_id,
+                    "name": name,
+                    # status:
+                    "subbed": False,            # represents user's subscription status
+                    "learning_mode": 1,         # represents chosen learning mode
+                    # rating:
+                    "words_translated": 0,      # represents how many words user has translated
+                    "grammar_used": 0,          # represents how many times user has used /grammar command
+                    "word_id": 0
+                }
+            )
+            logging.info("User has been added")
 
     def get_user_ids(self):
-        """Get list of all `user_ids` in DB"""
-        with self.connection:
-            logging.info("User ids have been exported")
-            return self.cursor.execute(f"""SELECT `user_id` FROM status""").fetchall()
+        """
+        
+        Returns a list of all user_ids found in DB 
+        
+        """
+        data = self.collection.find({})
+        return [x["_id"] for x in data]
 
-    def get_value(self, name):
-        """Get value from DB"""
-        user = User.get_current()
-
-        user_id = user.id
-        args = (name, user_id)
-
-        with self.connection:
-            logging.info("Value has been exported")
-            return self.cursor.execute(f"""SELECT {name} FROM `status` WHERE `user_id`={user_id}""").fetchone()[0]
-
-    def get_subscribers(self):
-        """Get list of subs, whose status `sub` is True"""
-        with self.connection:
-            logging.info("Subscribers list has been exported")
-            return self.cursor.execute(f"""SELECT `user_id` FROM `status` WHERE `sub`=True""").fetchall()
-
-    def update_value(self, name, value):
-        """Update some value in DB"""
+    def get_value(self, name: str):
+        """
+        
+        Returns requested column's value
+        :params:
+        :name:str:name of column
+        """
         user = User.get_current()
         user_id = user.id
+        
+        data = self.collection.find_one({"_id": user_id})
+        
+        return data[name]
 
-        with self.connection:
-            try:
-                self.cursor.execute(
-                    f"""UPDATE status SET {name}={value} WHERE `user_id`={user_id}""")
-            except:
-                self.cursor.execute(
-                    f"""UPDATE `status` SET {name}='{value}' WHERE `user_id` = {user_id}""")
-        logging.info("Value has been updated")
+    # def get_subs(self):
+    #     """
+        
+    #     Returns a list of tuples,
+    #     where first element is user_id, 
+    #     second element is a name of subscribed user
+        
+    #     """
+    #     data = self.collection.find({})
+    #     return [(x["_id"], x["name"]) for x in data if x["subbed"]]
+
+    def update_value(self, name: str, value=None):
+        """
+        
+        Update any value in the DB
+            In case value is provided, sets that value
+            If not, increments value(+1)
+        
+            Func defines current user_id itself
+        
+        """
+        user = User.get_current()
+        user_id = user.id
+        
+        if value != None:                           # if value is provided, sets that value
+            self.collection.update_one(
+                {
+                    "_id": user_id
+                },
+                {
+                    "$set":
+                    {
+                        name: value
+                    }
+                }
+            )
+            return
+        
+        self.collection.update_one(         # if there is no value provided, increments value(+1)
+            {
+                "_id": user_id
+            },
+            {
+                "$inc":
+                {
+                    name: 1
+                }
+            }
+        )
+
+    def delete_all(self):
+        """
+        
+        Delete everything in DB
+        
+        """
+        self.collection.delete_many({})
+
+class LEARNER_API(DB_API):
+    
+    def get_certain_mode_subs(self, mode):
+        """
+
+        Returns a list of user_ids of users that are subbed
+
+        """
+        data = self.collection.find(
+            {
+                "learning_mode": mode,
+                "subbed": True
+            }
+        )
+        return [x["_id"] for x in data]
+
+    def get_word_id(self):
+        return self.collection.find_one()["word_id"]
+    
+    def update_word_id(self):
+        self.collection.update_one({}, {"$inc":{"word_id": 1}})  
+    

@@ -10,8 +10,8 @@ from loader import dp, db, parser
 @dp.message_handler(Command("grammar"))
 async def grammar(message: Message):
     db.user_id_exists()
-    grammar_used = db.get_value(name="grammar_used")
-    db.update_value(name="grammar_used", value=grammar_used + 1)
+
+    db.update_value(name="grammar_used")
 
     markup = InlineKeyboardMarkup(row_width=3)
     markup.insert(InlineKeyboardButton(

@@ -10,7 +10,7 @@ from utils import Sentence
 @dp.message_handler(state=Sentence.dest)
 async def state_sentence(message: Message, state: FSMContext):
     text = message.text
-
+    
     await ChatActions.typing()
     if text in LANGS:
         await state.update_data(src=text)

@@ -9,7 +9,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from googletrans import Translator
 
 from data.config import TOKEN
-from classes import Database, Parser
+from classes import DB_API, Parser, LEARNER_API
 
 # Some configuration
 # filename = "data/bot.log",
@@ -23,9 +23,7 @@ bot = Bot(token=TOKEN, parse_mode="HTML")
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 # Class objects
-db = Database()
+db = DB_API()
 parser = Parser()
 translator = Translator()
-
-# On startup stuff
-db.create_table_status()
+learner = LEARNER_API()

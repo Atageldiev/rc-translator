@@ -42,6 +42,7 @@ async def show_examples(call: CallbackQuery):
     num = data["num"]
 
     await call.answer("Loading...")
-    await parser.parse_examples(data, call.message, num)
+    text, markup = parser.parse_examples(data, num)
+    await call.message.answer(text=text, reply_markup=markup)
 
     await dp.storage.update_data(user=call.from_user.id, data={"num": num + 3})

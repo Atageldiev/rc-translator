@@ -51,13 +51,14 @@ async def state_word(message: Message, state: FSMContext):
 @dp.message_handler(state=Word.res)
 async def state_send_result(message: Message, state: FSMContext):
     user_id = message.from_user.id
-    words_translated = db.get_value("words_translated")
 
-    db.update_value(name="words_translated", value=words_translated + 1)
+    db.update_value(name="words_translated")
 
     await state.update_data(word=message.text)
     data = await state.get_data()
-
+    
+    text, markup = parser.parse_translations(data)
+    
     await ChatActions.typing()
-    await parser.parse_translations(data, message)
+    await message.answer(text=text, reply_markup=markup)
     await state.reset_state(with_data=False)
