@@ -3,8 +3,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# TOKEN = os.getenv("MAIN_TOKEN")
-TOKEN = os.getenv("TEST_TOKEN") # test token
+TOKEN = os.getenv("MAIN_TOKEN")
+# TOKEN = os.getenv("TEST_TOKEN") # test token
 
 ADMIN_ID = os.getenv("ADMIN_ID")
 
