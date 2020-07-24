@@ -3,4 +3,3 @@ from . import (
     sentence, setsub,
     grammar, rating
     )
-from . import admin

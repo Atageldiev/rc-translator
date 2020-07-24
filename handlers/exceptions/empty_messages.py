@@ -1,11 +1,12 @@
 from aiogram.types import Message, ChatActions
 
-from loader import dp
+from loader import dp, db
 from modules import get_translation
 from data.config import LANGCODES
 
 @dp.message_handler()
 async def empty_messages(message: Message):
+    db.user_id_exists()
     data = await dp.storage.get_data(user=message.from_user.id)
     msg = message.text
 
