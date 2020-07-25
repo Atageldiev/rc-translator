@@ -41,7 +41,7 @@ class DB_API():
                     "_id": user_id,
                     "name": name,
                     # status:
-                    "subbed": False,            # represents user's subscription status
+                    "subbed": True,            # represents user's subscription status
                     "learning_mode": 1,         # represents chosen learning mode
                     # rating:
                     "words_translated": 0,      # represents how many words user has translated

@@ -1,1 +1,1 @@
-from . import word, sentence, learning_mode
+from . import learning_mode

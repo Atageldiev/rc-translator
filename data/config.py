@@ -6,13 +6,15 @@ load_dotenv()
 TOKEN = os.getenv("MAIN_TOKEN")
 # TOKEN = os.getenv("TEST_TOKEN") # test token
 
-ADMIN_ID = os.getenv("ADMIN_ID")
+ADMIN_ID = int(os.getenv("ADMIN_ID"))
 
 DB_USER=os.getenv("DB_USER")
 DB_PASS=os.getenv("DB_PASS")
 DB_DB=os.getenv("DB_DB")
 
 HEADERS = {'user-agent': 'my-app/0.0.1'}
+
+# sticker-cyber-chicken_id = CAACAgIAAxkBAAICmV8cPx-0S0FpPkj8Nia8yDsWyrDIAAJOAgACVp29CjD-a22BMgNvGgQ
 
 LANGCODES = {
     "русский": "ru",
@@ -25,6 +27,18 @@ LANGCODES = {
     "итальянский": "it",
     "турецкий": "tr",
     "китайский": "zh-cn"
+}
+LANGS = {
+    "ru": "русский",
+    "en": "английский",
+    "fr": "французский",
+    "de": "немецкий",
+    "es": "испанский",
+    "ja": "японский",
+    "ar": "арабский",
+    "it": "итальянский",
+    "tr": "турецкий",
+    "zh-cn": "китайский"
 }
 
 LEARNING_MODE = {
@@ -43,8 +57,6 @@ ALLOWED_LANGS = {
     'итальянский': ['арабский', 'немецкий', 'английский', 'испанский', 'французский', 'итальянский', 'японский', 'русский', 'турецкий'],
     'турецкий': ['английский', 'испанский', 'французский', 'итальянский', 'арабский', 'немецкий'], 'китайский': ['английский', 'испанский', 'французский']
 }
-
-LANGS = ALLOWED_LANGS.keys()
 # Template for code-split-comment
 #---------------------------------------------------------------------------
 #   SOME_TEXT

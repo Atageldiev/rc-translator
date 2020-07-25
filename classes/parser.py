@@ -28,9 +28,9 @@ class Parser():
         word = data["word"]
 
         if html.select('.example'):
-            msg = f"<b>Вот примеры со словом <em><u>{word}</u></em>:</b>\n"
+            msg = "Вот примеры\n"
             
-            html = html.select('.example')[num-3:num+1]
+            html = html.select('.example')[num-2:num+1]
             
             for el in html:
                 text1 = el.select('.ltr.src')
@@ -40,10 +40,10 @@ class Parser():
                 msg += "---" + self.__getText(text2[0].text) + "\n\n"
                 
             markup = InlineKeyboardMarkup()
-            markup.add(InlineKeyboardButton(text="Еще примеры", callback_data="show_examples"))
+            markup.add(InlineKeyboardButton(text="Еще примеры", callback_data="more_examples"))
             return msg, markup
         else:
-            return "ERROR, TRY AGAIN\n/word", None
+            return "ERROR, TRY AGAIN", None
 
     def parse_translations(self, data):
         """
@@ -55,7 +55,7 @@ class Parser():
         """
         html = self.__getHtml(data)
         word = data["word"]
-        msg = f"<b>Вот переводы слова <em><u>{word}</u></em> </b>\n<em><u>Нажмите на соответствующую кнопку, чтобы перейти на сайт и увидеть примеры только с этим словом:</u></em>"
+        msg = f"Вот переводы слова {word}\nНажмите на соответствующую кнопку, чтобы перейти на сайт и увидеть примеры только с этим словом:"
         
         if html.select('.translation.ltr'):
             markup = InlineKeyboardMarkup(row_width=3, inline_keyboard=True)
@@ -70,7 +70,7 @@ class Parser():
 
             return msg, markup
         else:
-            return "ERROR, TRY AGAIN\n/word", None
+            return "ERROR, TRY AGAIN", None
 
     async def parse_native_english(self, message, url):
         """
@@ -93,7 +93,7 @@ class Parser():
 
                 markup.add(InlineKeyboardButton(text=text, url=url))
 
-            await message.answer("<b>Вот что я нашел: </b>\n<em>Нажмите на соответствующую кнопку, чтобы перейти на сайт и почитать подробнее</em>", reply_markup=markup)
+            await message.answer("Вот что я нашел:\nНажмите на соответствующую кнопку, чтобы перейти на сайт и почитать подробнее", reply_markup=markup)
         else:
             logging.critical("NATIVE ENGLISH HAS CHANGED ITS ARCHITECTURE")
 

@@ -22,5 +22,5 @@ async def sentence(message: Message):
         markup.insert(el)
 
     await ChatActions.typing()
-    await message.answer("Выберите язык <b><u>с которого</u></b> хотите перевести", reply_markup=markup)
+    await message.answer("Выберите язык с которого хотите перевести", reply_markup=markup)
     await Sentence.dest.set()

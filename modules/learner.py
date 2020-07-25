@@ -20,14 +20,11 @@ def get_word():
     with open("words.txt", "r") as words:
         content = words.readlines()
         word = content[word_id].replace("\n", "")
-        return word
-
-
-data = {
-    "src": "английский",
-    "dest": "русский",
-    "word": get_word()
-}
+        return {
+            "src": "английский",
+            "dest": "русский",
+            "word": word
+        }
 
 def get_translation_example(data):
     translation, tmarkup = parser.parse_translations(data)
@@ -42,20 +39,21 @@ def get_translation_example(data):
             el = dict(el)
             markup.add(telebot.types.InlineKeyboardButton(text=el["text"], url=el["url"]))
 
-    example, trash = parser.parse_examples(data, 4)                                             # second variable is called "trash", cause there is no need in it
+    example, trash = parser.parse_examples(data, 4)                                             # second variable is called "trash", it is useless here
     if not trash:
         example = "Что-то пошло не так\n\nНапишите моему бате: @t2elzeth"
     return translation, markup, example
 
 def send_learner(subs: list, state=None):
+    data = get_word()
     translation, markup, example = get_translation_example(data)
     word = data["word"]
     
     logging.info("Sending words")
     
     for user_id in subs:
-        teleBot.send_message(chat_id=user_id, text=f"<b>Привет</b>🤪💫\n\n\
-Наше сегодняшнее слово 💁‍♀️ <em>{word}</em>\n\n\
+        teleBot.send_message(chat_id=user_id, text=f"<b>Привет</b>\n\n\
+Наше сегодняшнее слово {word}\n\n\
 Нажми 👉 #dailyword 👈, чтобы найти все выученные слова\n\n\
 Да прибудет с тобой дух английского💪")
         teleBot.send_message(chat_id=user_id, text=translation, reply_markup=markup)
@@ -70,10 +68,13 @@ def scheduler():
     
     schedule.every().day.at("04:00").do(send_learner, subs=subs1)
     schedule.every().day.at("09:00").do(send_learner, subs=subs1)
-    schedule.every().day.at("14:00").do(send_learner, subs=subs1, state="update_word")
+    schedule.every().day.at("14:00").do(send_learner, subs=subs1,
+                                        state="update_word")          # update word after sending to all users
     
-    schedule.every().day.at("05:00").do(send_learner, subs=subs2, state="update_word")
-    schedule.every().day.at("09:00").do(send_learner, subs=subs2, state="update_word")
+    schedule.every().day.at("05:00").do(send_learner, subs=subs2, 
+                                        state="update_word")          # update word after sending to all users
+    schedule.every().day.at("09:00").do(send_learner, subs=subs2,
+                                        state="update_word")          # update word after sending to all users
     schedule.every().day.at("13:00").do(send_learner, subs=subs2)
     
     

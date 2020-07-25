@@ -12,12 +12,11 @@ from .learner import scheduler
 #---------------------------------------------------------------------------
 #   Functions
 #---------------------------------------------------------------------------
-def get_translation(text, data: dict = {}, dest: str = ""):
-    if not dest:
-        dest = LANGCODES.get(data["dest"])
-        
+def get_translation(text, dest: str = ""):      
     return translator.translate(text, dest=dest).text
 
+def get_src(text):
+    return translator.translate(text).src
 
 async def setTask():
     scheduler()

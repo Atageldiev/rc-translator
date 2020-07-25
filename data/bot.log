@@ -2,3 +2,12 @@ ID-8756:22-Jul-20 17:44:31:INFO - [mymodule.py:34] - Task has been scheduled
 ID-8756:22-Jul-20 17:44:32:INFO - [executor.py:347] - Bot: RC translate test bot [@rc_translate_test_bot]
 ID-8756:22-Jul-20 17:44:34:WARNING - [executor.py:343] - Updates were skipped successfully.
 ID-8756:22-Jul-20 17:44:34:INFO - [dispatcher.py:287] - Start polling.
+ID-8624:25-Jul-20 19:22:02:INFO - [learner.py:82] - All tasks have been scheduled
+ID-8624:25-Jul-20 19:22:03:INFO - [executor.py:347] - Bot: RC translate test bot [@rc_translate_test_bot]
+ID-8624:25-Jul-20 19:22:03:WARNING - [executor.py:343] - Updates were skipped successfully.
+ID-8624:25-Jul-20 19:22:03:INFO - [dispatcher.py:287] - Start polling.
+ID-8624:25-Jul-20 19:22:13:INFO - [__init__.py:465] - Running job Every 10 seconds do send_learner(subs=[399344900]) (last run: [never], next run: 2020-07-25 19:22:12)
+ID-8624:25-Jul-20 19:22:13:INFO - [connectionpool.py:734] - Starting new HTTPS connection (1): context.reverso.net
+ID-8624:25-Jul-20 19:22:14:INFO - [connectionpool.py:734] - Starting new HTTPS connection (1): context.reverso.net
+ID-8624:25-Jul-20 19:22:15:INFO - [learner.py:54] - Sending words
+ID-8624:25-Jul-20 19:22:15:INFO - [connectionpool.py:734] - Starting new HTTPS connection (1): api.telegram.org

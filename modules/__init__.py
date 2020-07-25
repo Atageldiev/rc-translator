@@ -1,1 +1,1 @@
-from .mymodule import setTask, get_translation
+from .mymodule import setTask, get_translation, get_src
