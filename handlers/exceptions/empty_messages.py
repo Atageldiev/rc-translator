@@ -90,4 +90,6 @@ async def send_examples(call: CallbackQuery):
         await call.message.edit_text(text="Все примеры показаны", reply_markup=None)
 
 
-    
+@dp.callback_query_handler(text="None")
+async def none_call_data(call: CallbackQuery):
+    await call.answer(text="При переводе предложений кнопки не поддерживаются", show_alert=True)
