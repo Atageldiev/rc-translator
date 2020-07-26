@@ -77,7 +77,6 @@ def scheduler():
     schedule.every().day.at("09:00").do(send_learner, subs=subs2,
                                         state="update_word")          # update word after sending to all users
     schedule.every().day.at("13:00").do(send_learner, subs=subs2)
-    schedule.every().day.at("07:00").do(send_learner, subs=subs2)
     
     
     
