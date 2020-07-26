@@ -1,4 +1,5 @@
 from . import (
     start, setsub,
-    grammar, rating
+    grammar, rating,
+    test
     )
