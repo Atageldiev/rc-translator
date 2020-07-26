@@ -11,3 +11,7 @@ ID-8624:25-Jul-20 19:22:13:INFO - [connectionpool.py:734] - Starting new HTTPS c
 ID-8624:25-Jul-20 19:22:14:INFO - [connectionpool.py:734] - Starting new HTTPS connection (1): context.reverso.net
 ID-8624:25-Jul-20 19:22:15:INFO - [learner.py:54] - Sending words
 ID-8624:25-Jul-20 19:22:15:INFO - [connectionpool.py:734] - Starting new HTTPS connection (1): api.telegram.org
+ID-1440:26-Jul-20 12:41:20:INFO - [learner.py:82] - All tasks have been scheduled
+ID-1440:26-Jul-20 12:41:21:INFO - [executor.py:347] - Bot: RC translate test bot [@rc_translate_test_bot]
+ID-1440:26-Jul-20 12:41:22:WARNING - [executor.py:343] - Updates were skipped successfully.
+ID-1440:26-Jul-20 12:41:22:INFO - [dispatcher.py:287] - Start polling.
