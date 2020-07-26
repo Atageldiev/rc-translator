@@ -4,7 +4,7 @@ import schedule
 import asyncio
 
 from loader import parser, learner
-from data.config import TOKEN
+from data.config import TOKEN, ADMIN_ID
 
 teleBot = telebot.TeleBot(
     token=TOKEN, 
@@ -58,6 +58,7 @@ def send_learner(subs: list, state=None):
 Да прибудет с тобой дух английского💪")
         teleBot.send_message(chat_id=user_id, text=translation, reply_markup=markup)
         teleBot.send_message(chat_id=user_id, text=example)
+    teleBot.send_message(chat_id=ADMIN_ID, text="Я все отправил, отец")
     if state == "update_word":
         learner.update_word_id()
         logging.info("Word id has been updated")
@@ -76,6 +77,7 @@ def scheduler():
     schedule.every().day.at("09:00").do(send_learner, subs=subs2,
                                         state="update_word")          # update word after sending to all users
     schedule.every().day.at("13:00").do(send_learner, subs=subs2)
+    schedule.every().day.at("07:00").do(send_learner, subs=subs2)
     
     
     
