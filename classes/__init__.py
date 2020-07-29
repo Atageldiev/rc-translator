@@ -1,2 +1,2 @@
-from .database import DB_API, LEARNER_API
+from .database import Database, LearnerAPI
 from .parser import Parser

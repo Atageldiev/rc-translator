@@ -2,6 +2,7 @@ from aiogram.types import (
     Message, ReplyKeyboardMarkup,
     ChatActions
     )
+
 from aiogram.dispatcher.filters import Command
 
 from loader import dp, db
@@ -11,7 +12,7 @@ from utils import Sentence
 @dp.message_handler(Command("sentence"))
 async def sentence(message: Message):
     db.user_id_exists()
-    
+
     markup = ReplyKeyboardMarkup(
         row_width=3, 
         one_time_keyboard=True, 
