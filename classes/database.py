@@ -14,7 +14,7 @@ from data.config import DB_USER, DB_PASS, DB_DB
 
 class Database:
     """Class to work with DB"""
-    __slots__ = []
+    __slots__ = ["collection"]
 
     def __init__(self):
         cluster = MongoClient(
