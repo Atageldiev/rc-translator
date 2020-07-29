@@ -1,2 +1,0 @@
-# rc-translator
-Translator bot
