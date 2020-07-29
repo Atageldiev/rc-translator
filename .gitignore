@@ -7,9 +7,9 @@
 *.log
 
 # Environments
-*.env
+# *.env
 
 # Own files
 test.py
-Procfile
-runtime.txt
+# Procfile
+# runtime.txt
