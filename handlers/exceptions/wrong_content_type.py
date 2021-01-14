@@ -1,17 +1,11 @@
-#---------------------------------------------------------------------------
-#   imports
-#---------------------------------------------------------------------------
-import logging
-
-from aiogram.types import Message, ChatActions, ContentType
+from aiogram.types import Message, ContentType
 
 from loader import dp
+from utils.decorators import typing_action
 
-#---------------------------------------------------------------------------
-#   Handlers
-#---------------------------------------------------------------------------
-@dp.message_handler(content_types=[ContentType.DOCUMENT, ContentType.PHOTO, 
-                                    ContentType.AUDIO, ContentType.VOICE, ContentType.VIDEO, ContentType.STICKER])
+
+@dp.message_handler(content_types=[ContentType.DOCUMENT, ContentType.PHOTO,
+                                   ContentType.AUDIO, ContentType.VOICE, ContentType.VIDEO, ContentType.STICKER])
+@typing_action
 async def other_types(message: Message):
-    await ChatActions.typing()
     await message.answer("Ну и что мне с этим сделать? 😒")

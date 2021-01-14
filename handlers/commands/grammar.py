@@ -1,60 +1,44 @@
+from aiogram.dispatcher.filters import Command
 from aiogram.types import (
-    Message, ChatActions,
+    Message,
     CallbackQuery, InlineKeyboardMarkup,
     InlineKeyboardButton as IKB
 )
-from aiogram.dispatcher.filters import Command
 
 from loader import dp, db, parser
+from utils.decorators import typing_action
 
 
 @dp.message_handler(Command("grammar"))
+@typing_action
 async def grammar(message: Message):
     db.user_id_exists()
 
     db.update_value(name="grammar_used")
 
     markup = InlineKeyboardMarkup(row_width=3)
-    markup.insert(IKB(
-        text="Глагол | Verb", callback_data="verb"))
-    markup.insert(IKB(
-        text="Артикли | Articles", callback_data="articles"))
-    markup.insert(IKB(
-        text="Существительное | Noun", callback_data="noun"))
-    markup.insert(IKB(
-        text="Прилагательное | Adjective", callback_data="adjective"))
-    markup.insert(IKB(
-        text="Местоимение | Pronoun", callback_data="pronoun"))
-    markup.insert(IKB(
-        text="Числительное | Numeral", callback_data="numeral"))
-    markup.insert(IKB(
-        text="Наречие | Adverb", callback_data="adverb"))
-    markup.insert(IKB(
-        text="Предлог | Preposition", callback_data="preposition"))
-    markup.insert(IKB(
-        text="Союз | Conjunction", callback_data="conjunction"))
-    markup.insert(IKB(
-        text="Частица | Particles", callback_data="particles"))
+    markup.insert(IKB(text="Глагол | Verb", callback_data="verb"))
+    markup.insert(IKB(text="Артикли | Articles", callback_data="articles"))
+    markup.insert(IKB(text="Существительное | Noun", callback_data="noun"))
+    markup.insert(IKB(text="Прилагательное | Adjective", callback_data="adjective"))
+    markup.insert(IKB(text="Местоимение | Pronoun", callback_data="pronoun"))
+    markup.insert(IKB(text="Числительное | Numeral", callback_data="numeral"))
+    markup.insert(IKB(text="Наречие | Adverb", callback_data="adverb"))
+    markup.insert(IKB(text="Предлог | Preposition", callback_data="preposition"))
+    markup.insert(IKB(text="Союз | Conjunction", callback_data="conjunction"))
+    markup.insert(IKB(text="Частица | Particles", callback_data="particles"))
     markup.insert(IKB(text="Междометие | Interjections",
                       url="https://www.native-english.ru/grammar/english-interjections"))
-    markup.insert(IKB(
-        text="Члены предложения | Parts of a sentence", callback_data="parts"))
-    markup.insert(IKB(
-        text="Простые предложения | Simple sentences", callback_data="simple_sentences"))
-    markup.insert(IKB(
-        text="Сложные предложения | Complex sentences", callback_data="complex_sentences"))
-    markup.insert(IKB(
-        text="Косвенная речь | Indirect speech", callback_data="indirect_speech"))
+    markup.insert(IKB(text="Члены предложения | Parts of a sentence", callback_data="parts"))
+    markup.insert(IKB(text="Простые предложения | Simple sentences", callback_data="simple_sentences"))
+    markup.insert(IKB(text="Сложные предложения | Complex sentences", callback_data="complex_sentences"))
+    markup.insert(IKB(text="Косвенная речь | Indirect speech", callback_data="indirect_speech"))
     markup.insert(IKB(text="Пунктуация | Punctuation",
                       url="https://www.native-english.ru/grammar/english-punctuation"))
 
-    await ChatActions.typing()
     await message.answer("Выберите насчет чего вы хотите получить готовую информацию: ", reply_markup=markup)
 
 
-# ---------------------------------------------------------------------------
-#   Functions to handle inline-buttons that are created by /grammar command
-# ---------------------------------------------------------------------------
 @dp.callback_query_handler(text="articles")
 async def articles(call: CallbackQuery):
     await call.answer("Loading...")
@@ -64,8 +48,7 @@ async def articles(call: CallbackQuery):
 @dp.callback_query_handler(text="verb")
 async def verb(call: CallbackQuery):
     await call.answer("Loading...")
-    await parser.parse_native_english(
-        call.message, "https://www.native-english.ru/grammar/english-verbs")
+    await parser.parse_native_english(call.message, "https://www.native-english.ru/grammar/english-verbs")
 
 
 @dp.callback_query_handler(text="noun")
@@ -125,10 +108,8 @@ async def particles(call: CallbackQuery):
 async def parts(call: CallbackQuery):
     await call.answer("Loading...")
     markup = InlineKeyboardMarkup()
-    markup.add(IKB(
-        text="Главные | Main", callback_data="main_parts"))
-    markup.add(IKB(
-        text="Второстепенные | Secondary", callback_data="secondary_parts"))
+    markup.add(IKB(text="Главные | Main", callback_data="main_parts"))
+    markup.add(IKB(text="Второстепенные | Secondary", callback_data="secondary_parts"))
     await call.message.answer("<b>Найденный материал по членам предложения: </b>", reply_markup=markup)
 
 
@@ -136,10 +117,8 @@ async def parts(call: CallbackQuery):
 async def main_parts(call: CallbackQuery):
     await call.answer("Loading...")
     markup = InlineKeyboardMarkup()
-    markup.add(IKB(text="Подлежащее | Subject",
-                   url="https://www.native-english.ru/grammar/english-subject"))
-    markup.add(IKB(text="Сказуемое | Predicate",
-                   url="https://www.native-english.ru/grammar/english-predicate"))
+    markup.add(IKB(text="Подлежащее | Subject", url="https://www.native-english.ru/grammar/english-subject"))
+    markup.add(IKB(text="Сказуемое | Predicate", url="https://www.native-english.ru/grammar/english-predicate"))
     await call.message.answer("<b>Найденный материал по главным членам предложения: </b>", reply_markup=markup)
 
 
@@ -147,12 +126,9 @@ async def main_parts(call: CallbackQuery):
 async def secondary_parts(call: CallbackQuery):
     await call.answer("Loading...")
     markup = InlineKeyboardMarkup()
-    markup.add(IKB(text="Дополнение | Object",
-                   url="https://www.native-english.ru/grammar/english-object"))
-    markup.add(IKB(text="Определение | Attribute",
-                   url="https://www.native-english.ru/grammar/english-attribute"))
-    markup.add(IKB(text="Обстоятельство | Adverbial",
-                   url="https://www.native-english.ru/grammar/english-adverbial"))
+    markup.add(IKB(text="Дополнение | Object", url="https://www.native-english.ru/grammar/english-object"))
+    markup.add(IKB(text="Определение | Attribute", url="https://www.native-english.ru/grammar/english-attribute"))
+    markup.add(IKB(text="Обстоятельство | Adverbial", url="https://www.native-english.ru/grammar/english-adverbial"))
     markup.add(IKB(text="Не члены предложения | Not parts of a sentence",
                    url="https://www.native-english.ru/grammar/not-sentence"))
     await call.message.answer("<b>Найденный материал по второстепенным членам предложения: </b>", reply_markup=markup)
@@ -162,12 +138,9 @@ async def secondary_parts(call: CallbackQuery):
 async def simple_sentences(call: CallbackQuery):
     await call.answer("Loading...")
     markup = InlineKeyboardMarkup()
-    markup.add(IKB(text="Определение | Definition",
-                   url="https://www.native-english.ru/grammar/simple-sentences"))
-    markup.add(IKB(text="Порядок слов | Word order",
-                   url="https://www.native-english.ru/grammar/word-order"))
-    markup.add(IKB(text="Инверсия | Inversion",
-                   url="https://www.native-english.ru/grammar/inversion"))
+    markup.add(IKB(text="Определение | Definition", url="https://www.native-english.ru/grammar/simple-sentences"))
+    markup.add(IKB(text="Порядок слов | Word order", url="https://www.native-english.ru/grammar/word-order"))
+    markup.add(IKB(text="Инверсия | Inversion", url="https://www.native-english.ru/grammar/inversion"))
     markup.add(IKB(text="Общий вопрос | General question",
                    url="https://www.native-english.ru/grammar/general-questions"))
     markup.add(IKB(text="Специальный вопрос | Special questions",
@@ -183,8 +156,7 @@ async def simple_sentences(call: CallbackQuery):
 async def complex_sentences(call: CallbackQuery):
     await call.answer("Loading...")
     markup = InlineKeyboardMarkup()
-    markup.add(IKB(text="Сложносочиненное | Compound",
-                   url="https://www.native-english.ru/grammar/compound-sentences"))
+    markup.add(IKB(text="Сложносочиненное | Compound", url="https://www.native-english.ru/grammar/compound-sentences"))
     markup.add(IKB(text="Сложноподчиненное | Complex",
                    url="https://www.native-english.ru/grammar/complex-sentences"))
     markup.add(IKB(text="Условное | Conditional",

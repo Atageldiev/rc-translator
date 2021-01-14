@@ -2,8 +2,9 @@ import logging
 
 from aiogram.types import Message, ChatActions
 
-from loader import dp, bot
 from data.config import ADMIN_ID
+from loader import dp, bot
+
 
 @dp.message_handler(lambda message: message.from_user.id == ADMIN_ID, commands="send_db", commands_prefix="!")
 async def send_log(message: Message):

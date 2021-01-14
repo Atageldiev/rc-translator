@@ -1,14 +1,16 @@
-from aiogram.types import Message, ChatActions
 from aiogram.dispatcher import FSMContext
+from aiogram.types import Message
 
-from loader import dp, db, bot
 from data.config import ADMIN_ID
+from loader import dp, db, bot
 from utils import Admin
+from utils.decorators import typing_action
+
 
 @dp.message_handler(lambda message: message.from_user.id == ADMIN_ID, commands="send_all", commands_prefix="!")
+@typing_action
 async def send_all(message: Message):
     await Admin.send_message_all.set()
-    await ChatActions.typing()
     await message.answer("Бать, напиши сообщение, которое хочешь отправить всем юзерам")
 
 

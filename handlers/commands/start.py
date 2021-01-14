@@ -1,14 +1,15 @@
-from aiogram.types import ChatActions, Message
 from aiogram.dispatcher.filters.builtin import CommandStart
+from aiogram.types import Message
 
 from loader import dp, db
-from data.config import ADMIN_ID
+from utils.decorators import typing_action
+
 
 @dp.message_handler(CommandStart())
+@typing_action
 async def start(message: Message):
     db.user_id_exists()
-    
-    await ChatActions.typing()
+
     await message.reply("Привет\n\n\
 Кто я?\n\
 Я - бот который поможет тебе с переводами\n\n\

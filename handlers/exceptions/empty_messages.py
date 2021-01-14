@@ -1,15 +1,13 @@
-import logging
-
 from aiogram.types import (
     Message, ChatActions,
-    CallbackQuery, 
-    InlineKeyboardMarkup, 
+    CallbackQuery,
+    InlineKeyboardMarkup,
     InlineKeyboardButton as IKB
-    )
+)
 
+from data.config import LANGCODES, LANGS, ALLOWED_LANGS
 from loader import dp, db, parser
 from modules import get_translation, get_src
-from data.config import LANGCODES, LANGS, ALLOWED_LANGS
 
 
 @dp.message_handler()
@@ -17,7 +15,7 @@ async def sentence(message: Message):
     db.user_id_exists()
     db.update_value("words_translated")
     text = message.text
-    
+
     if len(text.split()) == 1:
         src = get_src(text)
         src = LANGS.get(src)
@@ -55,6 +53,7 @@ async def sentence(message: Message):
         reply_markup=markup
     )
 
+
 @dp.callback_query_handler(text="more_examples")
 @dp.callback_query_handler(text="ru")
 @dp.callback_query_handler(text="en")
@@ -69,23 +68,21 @@ async def sentence(message: Message):
 async def send_examples(call: CallbackQuery):
     user_id = call.from_user.id
     data = await dp.storage.get_data(user=user_id)
-    
+
     if call.data != "more_examples":
         dest = LANGS.get(call.data)
-        
+
         await dp.storage.update_data(user=user_id, data={"dest": dest})
-        
+
     num = data["num"]
     await dp.storage.update_data(user=user_id, data={"num": num + 3})
     data = await dp.storage.get_data(user=user_id)
-    
+
     await call.answer("Loading...")
-    
+
     text, markup = parser.parse_examples(data, data["num"])
-    
     if text != "Вот примеры\n":
         await call.message.answer(text=text, reply_markup=markup)
-        
     else:
         await call.message.edit_text(text="Все примеры показаны", reply_markup=None)
 
