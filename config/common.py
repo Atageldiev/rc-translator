@@ -1,6 +1,18 @@
 from pathlib import Path
 
-ADMINS = [399344900]
+__all__ = [
+    "ADMINS",
+    "BASE_DIR",
+    "HEADERS",
+    "LANGCODES",
+    "LANGS",
+    "LEARNING_MODE",
+    "ALLOWED_LANGS"
+]
+
+ADMINS = [
+    399344900
+]
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -53,4 +65,3 @@ ALLOWED_LANGS = {
     'турецкий': ['английский', 'испанский', 'французский', 'итальянский', 'арабский', 'немецкий'],
     'китайский': ['английский', 'испанский', 'французский']
 }
-# Aida - 865060504
