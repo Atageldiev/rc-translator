@@ -1,19 +1,8 @@
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-DEBUG = True
-if DEBUG:
-    TOKEN = os.getenv("TEST_TOKEN")
-else:
-    TOKEN = os.getenv("MAIN_TOKEN")
+from pathlib import Path
 
 ADMIN_ID = 399344900
 
-DB_USER = os.getenv("DB_USER")
-DB_PASS = os.getenv("DB_PASS")
-DB_DB = os.getenv("DB_DB")
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 HEADERS = {'user-agent': 'my-app/0.0.1'}
 

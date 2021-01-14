@@ -2,9 +2,11 @@ import logging
 
 from aiogram.types import Message
 
-from data.config import ADMIN_ID
+from core.conf import settings
 from loader import dp, db, bot
 from utils.decorators import typing_action
+
+ADMIN_ID = settings.ADMIN_ID
 
 
 @dp.message_handler(lambda message: message.from_user.id == ADMIN_ID, commands="users", commands_prefix="!")

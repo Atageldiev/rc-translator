@@ -5,9 +5,11 @@ from aiogram.types import (
     InlineKeyboardButton as IKB
 )
 
-from data.config import LANGCODES, LANGS, ALLOWED_LANGS
+from core.conf import settings
 from loader import dp, db, parser
 from modules import get_translation, get_src
+
+LANGCODES, LANGS, ALLOWED_LANGS = settings.LANGCODES, settings.LANGS, settings.ALLOWED_LANGS
 
 
 @dp.message_handler()

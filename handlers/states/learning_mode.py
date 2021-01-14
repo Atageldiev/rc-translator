@@ -1,9 +1,11 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove
 
-from data.config import LEARNING_MODE
+from core.conf import settings
 from loader import dp, db
 from utils import LearningMode
+
+LEARNING_MODE = settings.LEARNING_MODE
 
 
 @dp.message_handler(state=LearningMode.mode)

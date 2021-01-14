@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup as BS
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from data.config import HEADERS
+from core.conf import settings
 
 
 class Parser:
@@ -21,7 +21,7 @@ class Parser:
         word = data["word"]
 
         url = f"https://context.reverso.net/перевод/{src}-{dest}/{word}"
-        response = requests.get(url, headers=HEADERS)
+        response = requests.get(url, headers=settings.HEADERS)
         html = BS(response.content, "html.parser")
         return html
 
@@ -74,7 +74,7 @@ class Parser:
 
     async def parse_native_english(self, message, url):
         """Parses native-english.ru, and gets links to the websites about requested rule of english"""
-        response = requests.get(url, headers=HEADERS)
+        response = requests.get(url, headers=settings.HEADERS)
         html = BS(response.content, "html.parser")
 
         html = html.select('.list__item > a')

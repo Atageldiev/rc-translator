@@ -1,7 +1,7 @@
 from aiogram.dispatcher.filters import Command
 from aiogram.types import Message, ReplyKeyboardMarkup
 
-from data.config import LANGS
+from core.conf import settings
 from loader import dp
 from utils import Sentence
 from utils.decorators import check_user_existance
@@ -16,7 +16,7 @@ async def sentence(message: Message):
         resize_keyboard=True
     )
 
-    for el in LANGS:
+    for el in settings.LANGS:
         markup.insert(el)
 
     await message.answer("Выберите язык с которого хотите перевести", reply_markup=markup)

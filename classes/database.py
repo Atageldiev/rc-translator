@@ -3,7 +3,7 @@ import logging
 from aiogram.types import User
 from pymongo import MongoClient
 
-from data.config import DB_USER, DB_PASS, DB_DB
+from core.conf import settings
 
 
 class Database:
@@ -12,7 +12,7 @@ class Database:
 
     def __init__(self):
         cluster = MongoClient(
-            f"mongodb+srv://{DB_USER}:{DB_PASS}@rc-translator.d217k.mongodb.net/{DB_DB}?retryWrites=true&w=majority")
+            f"mongodb+srv://{settings.DB_USER}:{settings.DB_PASS}@rc-translator.d217k.mongodb.net/{settings.DB_DB}?retryWrites=true&w=majority")
         db = cluster["rc-translator"]
         self.collection = db["status"]
 

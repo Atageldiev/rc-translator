@@ -5,7 +5,7 @@ from aiogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton
 )
 
-from data.config import LEARNING_MODE
+from core.conf import settings
 from loader import dp, db
 from utils import LearningMode
 from utils.decorators import typing_action, check_user_existance
@@ -56,14 +56,15 @@ async def unsub(call: CallbackQuery):
 async def learning_mode(call: CallbackQuery):
     learning_mode = db.get_value("learning_mode")
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+    learning_modes = settings.LEARNING_MODE
 
-    for el in LEARNING_MODE.keys():
+    for el in learning_modes.keys():
         markup.insert(f"Mode {el}")
     markup.add("Cancel")
 
     await call.message.reply(
-        f"Доступные режимы обучения: \n\n1 - {LEARNING_MODE.get(1)}\n2 - {LEARNING_MODE.get(2)}\n\n<b>Внимание!</b>\nВремя в каждом режиме прописано по Бишкекскому\n(GMT+06)")
+        f"Доступные режимы обучения: \n\n1 - {learning_modes.get(1)}\n2 - {learning_modes.get(2)}\n\n<b>Внимание!</b>\nВремя в каждом режиме прописано по Бишкекскому\n(GMT+06)")
     await call.message.reply(
-        f"Ваш активный режим обучения: <em>{LEARNING_MODE.get(learning_mode)}</em>\n\n<em><u>Нажмите на соответствующую кнопку, чтобы изменить режим</u></em>",
+        f"Ваш активный режим обучения: <em>{learning_modes.get(learning_modes)}</em>\n\n<em><u>Нажмите на соответствующую кнопку, чтобы изменить режим</u></em>",
         reply_markup=markup)
     await LearningMode.mode.set()

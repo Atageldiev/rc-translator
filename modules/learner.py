@@ -3,8 +3,10 @@ import logging
 import schedule
 import telebot
 
-from data.config import TOKEN, ADMIN_ID
+from core.conf import settings
 from loader import parser, learner
+
+TOKEN, ADMIN_ID = settings.TOKEN, settings.ADMIN_ID
 
 teleBot = telebot.TeleBot(
     token=TOKEN,
