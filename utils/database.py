@@ -39,8 +39,6 @@ class Database:
                 })
             print("User has been added")
             logging.info("User has been added")
-        else:
-            print("User exists!")
 
     def get_user_ids(self):
         """Returns a list of all user_ids found in DB"""
@@ -82,14 +80,4 @@ class Database:
         self.collection.delete_many({})
 
 
-class LearnerAPI(Database):
-    def get_certain_mode_subs(self, mode):
-        """Returns a list of user_ids of users that are subbed"""
-        data = self.collection.find({"learning_mode": mode, "subbed": True})
-        return [x["_id"] for x in data]
-
-    def get_word_id(self):
-        return self.collection.find_one()["word_id"]
-
-    def update_word_id(self):
-        self.collection.update_one({}, {"$inc": {"word_id": 1}})
+db = Database()

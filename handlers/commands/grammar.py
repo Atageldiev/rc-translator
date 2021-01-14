@@ -5,8 +5,10 @@ from aiogram.types import (
     InlineKeyboardButton as IKB
 )
 
-from loader import dp, db, parser
+from core.conf import dp
+from utils.database import db
 from utils.decorators import typing_action, check_user_existance
+from utils.parser import parse_native_english
 
 
 @dp.message_handler(Command("grammar"))
@@ -41,55 +43,55 @@ async def grammar(message: Message):
 @dp.callback_query_handler(text="articles")
 async def articles(call: CallbackQuery):
     await call.answer("Loading...")
-    await parser.parse_native_english(call.message, "https://www.native-english.ru/grammar/english-articles")
+    await parse_native_english(call.message, "https://www.native-english.ru/grammar/english-articles")
 
 
 @dp.callback_query_handler(text="verb")
 async def verb(call: CallbackQuery):
     await call.answer("Loading...")
-    await parser.parse_native_english(call.message, "https://www.native-english.ru/grammar/english-verbs")
+    await parse_native_english(call.message, "https://www.native-english.ru/grammar/english-verbs")
 
 
 @dp.callback_query_handler(text="noun")
 async def noun(call: CallbackQuery):
     await call.answer("Loading...")
-    await parser.parse_native_english(call.message, "https://www.native-english.ru/grammar/english-nouns")
+    await parse_native_english(call.message, "https://www.native-english.ru/grammar/english-nouns")
 
 
 @dp.callback_query_handler(text="adjective")
 async def adjective(call: CallbackQuery):
     await call.answer("Loading...")
-    await parser.parse_native_english(call.message, "https://www.native-english.ru/grammar/english-adjectives")
+    await parse_native_english(call.message, "https://www.native-english.ru/grammar/english-adjectives")
 
 
 @dp.callback_query_handler(text="pronoun")
 async def pronoun(call: CallbackQuery):
     await call.answer("Loading...")
-    await parser.parse_native_english(call.message, "https://www.native-english.ru/grammar/english-pronouns")
+    await parse_native_english(call.message, "https://www.native-english.ru/grammar/english-pronouns")
 
 
 @dp.callback_query_handler(text="numeral")
 async def numeral(call: CallbackQuery):
     await call.answer("Loading...")
-    await parser.parse_native_english(call.message, "https://www.native-english.ru/grammar/english-numerals")
+    await parse_native_english(call.message, "https://www.native-english.ru/grammar/english-numerals")
 
 
 @dp.callback_query_handler(text="adverb")
 async def adverb(call: CallbackQuery):
     await call.answer("Loading...")
-    await parser.parse_native_english(call.message, "https://www.native-english.ru/grammar/english-adverbs")
+    await parse_native_english(call.message, "https://www.native-english.ru/grammar/english-adverbs")
 
 
 @dp.callback_query_handler(text="preposition")
 async def preposition(call: CallbackQuery):
     await call.answer("Loading...")
-    await parser.parse_native_english(call.message, "https://www.native-english.ru/grammar/english-prepositions")
+    await parse_native_english(call.message, "https://www.native-english.ru/grammar/english-prepositions")
 
 
 @dp.callback_query_handler(text="conjunction")
 async def conjunction(call: CallbackQuery):
     await call.answer("Loading...")
-    await parser.parse_native_english(call.message, "https://www.native-english.ru/grammar/english-conjunctions")
+    await parse_native_english(call.message, "https://www.native-english.ru/grammar/english-conjunctions")
 
 
 @dp.callback_query_handler(text="particles")

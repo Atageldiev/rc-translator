@@ -5,9 +5,9 @@ from aiogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton
 )
 
-from core.conf import settings
-from loader import dp, db
+from core.conf import dp, settings
 from utils import LearningMode
+from utils.database import db
 from utils.decorators import typing_action, check_user_existance
 
 

@@ -1,7 +1,8 @@
 from aiogram.dispatcher.filters import Command
 from aiogram.types import Message
 
-from loader import dp, db
+from core.conf import dp
+from utils.database import db
 from utils.decorators import typing_action, check_user_existance
 
 

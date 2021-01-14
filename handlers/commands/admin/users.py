@@ -2,8 +2,8 @@ import logging
 
 from aiogram.types import Message
 
-from core.conf import settings
-from loader import dp, db, bot
+from core.conf import dp, bot, settings
+from utils.database import db
 from utils.decorators import typing_action
 
 

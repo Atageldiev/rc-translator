@@ -5,10 +5,11 @@ from aiogram.types import (
     InlineKeyboardButton as IKB
 )
 
-from core.conf import settings
-from loader import dp, db, parser
-from utils.translator import get_translation, get_src
+from core.conf import dp, settings
+from utils.database import db
 from utils.decorators import check_user_existance
+from utils.parser import parse_examples
+from utils.translator import get_translation, get_src
 
 
 @dp.message_handler()
@@ -77,7 +78,7 @@ async def send_examples(call: CallbackQuery):
 
     await call.answer("Loading...")
 
-    text, markup = parser.parse_examples(data, data["num"])
+    text, markup = parse_examples(data, data["num"])
     if text != "Вот примеры\n":
         await call.message.answer(text=text, reply_markup=markup)
     else:

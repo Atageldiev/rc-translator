@@ -1,8 +1,7 @@
 from aiogram.dispatcher.filters import Command
 from aiogram.types import Message, ReplyKeyboardMarkup
 
-from core.conf import settings
-from loader import dp
+from core.conf import dp, settings
 from utils import Sentence
 from utils.decorators import check_user_existance
 

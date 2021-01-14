@@ -2,8 +2,7 @@ import logging
 
 from aiogram.types import Message, ChatActions
 
-from core.conf import settings
-from loader import dp, bot
+from core.conf import dp, bot, settings
 
 
 @dp.message_handler(lambda message: message.from_user.id in settings.ADMINS, commands="send_log", commands_prefix="!")
