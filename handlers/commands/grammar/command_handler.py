@@ -13,5 +13,5 @@ from .utils import get_markup_by_key_from_json
 async def grammar(message: Message):
     db.grammar_used += 1
 
-    markup = get_markup_by_key_from_json("default")
+    markup = await get_markup_by_key_from_json("default")
     await message.answer("Выберите насчет чего вы хотите получить готовую информацию: ", reply_markup=markup)

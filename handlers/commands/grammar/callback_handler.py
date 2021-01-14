@@ -4,7 +4,7 @@ from core.conf import dp
 from utils.parser import parse_native_english
 from .utils import get_json_data, get_markup_by_key_from_json
 
-callbacks: dict = get_json_data("callbacks.json")
+callbacks: dict = await get_json_data("callbacks.json")
 
 
 @dp.callback_query_handler(lambda call: call.data in callbacks.keys())
@@ -24,5 +24,5 @@ async def handle_parsing_callbacks(call: CallbackQuery):
 
 
 async def handle_markup_callbacks(call: CallbackQuery):
-    markup = get_markup_by_key_from_json(call.data)
+    markup = await get_markup_by_key_from_json(call.data)
     await call.message.answer("<b>Найденный материал: </b>", reply_markup=markup)
