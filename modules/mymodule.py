@@ -1,4 +1,6 @@
-from loader import translator
+from googletrans import Translator
+
+translator = Translator()
 
 
 def get_translation(text, dest: str = ""):
