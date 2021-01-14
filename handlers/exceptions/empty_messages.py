@@ -12,7 +12,7 @@ from modules import get_translation, get_src
 
 @dp.message_handler()
 async def sentence(message: Message):
-    db.user_id_exists()
+    db.user_exists()
     db.update_value("words_translated")
     text = message.text
 

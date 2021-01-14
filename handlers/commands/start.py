@@ -2,14 +2,13 @@ from aiogram.dispatcher.filters.builtin import CommandStart
 from aiogram.types import Message
 
 from loader import dp, db
-from utils.decorators import typing_action
+from utils.decorators import typing_action, check_user_existance
 
 
 @dp.message_handler(CommandStart())
 @typing_action
+@check_user_existance
 async def start(message: Message):
-    db.user_id_exists()
-
     await message.reply("Привет\n\n\
 Кто я?\n\
 Я - бот который поможет тебе с переводами\n\n\

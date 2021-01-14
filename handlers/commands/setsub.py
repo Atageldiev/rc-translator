@@ -8,14 +8,13 @@ from aiogram.types import (
 from data.config import LEARNING_MODE
 from loader import dp, db
 from utils import LearningMode
-from utils.decorators import typing_action
+from utils.decorators import typing_action, check_user_existance
 
 
 @dp.message_handler(Command("setsub"))
 @typing_action
+@check_user_existance
 async def setsub(message: Message):
-    db.user_id_exists()
-
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton(text="Subscribe/unsubscribe", callback_data="sub_unsub"))
     markup.add(InlineKeyboardButton(text="Change learning mode", callback_data="learning_mode"))

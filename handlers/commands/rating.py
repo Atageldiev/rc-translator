@@ -2,14 +2,14 @@ from aiogram.dispatcher.filters import Command
 from aiogram.types import Message
 
 from loader import dp, db
-from utils.decorators import typing_action
+from utils.decorators import typing_action, check_user_existance
 
 
 @dp.message_handler(Command("rating"))
 @typing_action
+@check_user_existance
 async def rating(message: Message):
     name = message.from_user.first_name
-    db.user_id_exists()
     words_translated = db.get_value(name="words_translated")
     grammar_used = db.get_value(name="grammar_used")
 

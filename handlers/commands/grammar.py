@@ -6,14 +6,13 @@ from aiogram.types import (
 )
 
 from loader import dp, db, parser
-from utils.decorators import typing_action
+from utils.decorators import typing_action, check_user_existance
 
 
 @dp.message_handler(Command("grammar"))
 @typing_action
+@check_user_existance
 async def grammar(message: Message):
-    db.user_id_exists()
-
     db.update_value(name="grammar_used")
 
     markup = InlineKeyboardMarkup(row_width=3)

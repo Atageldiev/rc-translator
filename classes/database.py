@@ -16,7 +16,7 @@ class Database:
         db = cluster["rc-translator"]
         self.collection = db["status"]
 
-    def user_id_exists(self):
+    def user_exists(self):
         """Checks if the user is already in DB, adds if he is not"""
         user = User.get_current()
 
@@ -37,7 +37,10 @@ class Database:
                     "grammar_used": 0,
                     "word_id": 0
                 })
+            print("User has been added")
             logging.info("User has been added")
+        else:
+            print("User exists!")
 
     def get_user_ids(self):
         """Returns a list of all user_ids found in DB"""

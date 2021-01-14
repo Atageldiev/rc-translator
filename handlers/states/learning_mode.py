@@ -1,5 +1,5 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, ChatActions, ReplyKeyboardRemove
+from aiogram.types import Message, ReplyKeyboardRemove
 
 from data.config import LEARNING_MODE
 from loader import dp, db
