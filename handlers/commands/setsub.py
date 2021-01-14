@@ -24,7 +24,7 @@ async def setsub(message: Message):
 
 @dp.callback_query_handler(text="sub_unsub")
 async def sub_unsub(call: CallbackQuery):
-    if db.get_value(name="subbed"):
+    if db.subbed:
         status = "Subscribed"
     else:
         status = "Unsubscribed"
@@ -36,7 +36,7 @@ async def sub_unsub(call: CallbackQuery):
 
 @dp.callback_query_handler(text="sub")
 async def sub(call: CallbackQuery):
-    db.update_value(name="subbed", value=True)
+    db.subbed = True
     status = "Subscribed"
 
     await call.answer("Success!")
@@ -45,7 +45,7 @@ async def sub(call: CallbackQuery):
 
 @dp.callback_query_handler(text="unsub")
 async def unsub(call: CallbackQuery):
-    db.update_value(name="subbed", value=False)
+    db.subbed = False
 
     status = "Unsubscribed"
     await call.answer("Success!")
@@ -54,7 +54,6 @@ async def unsub(call: CallbackQuery):
 
 @dp.callback_query_handler(text="learning_mode")
 async def learning_mode(call: CallbackQuery):
-    learning_mode = db.get_value("learning_mode")
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
     learning_modes = settings.LEARNING_MODE
 

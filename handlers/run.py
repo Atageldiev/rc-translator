@@ -1,5 +1,5 @@
 from aiogram import executor
-from loader import dp
+from core.conf import dp
 
 
 def run_bot():

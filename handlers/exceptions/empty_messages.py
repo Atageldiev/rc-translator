@@ -15,7 +15,7 @@ from utils.translator import get_translation, get_src
 @dp.message_handler()
 @check_user_existance
 async def sentence(message: Message):
-    db.update_value("words_translated")
+    db.words_translated += 1
     text = message.text
 
     if len(text.split()) == 1:

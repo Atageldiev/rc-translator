@@ -11,8 +11,8 @@ from utils.decorators import typing_action, check_user_existance
 @check_user_existance
 async def rating(message: Message):
     name = message.from_user.first_name
-    words_translated = db.get_value(name="words_translated")
-    grammar_used = db.get_value(name="grammar_used")
+    words_translated = db.words_translated
+    grammar_used = db.grammar_used
 
     await message.answer(f"<b><u>{name}</u></b>, ваша статистика:\n\
     <em>Слов переведено:</em>- {words_translated}\n \

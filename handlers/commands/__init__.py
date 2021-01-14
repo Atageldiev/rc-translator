@@ -1,4 +1,1 @@
-from . import (
-    start, setsub,
-    grammar, rating,
-    )
+from . import start, setsub, grammar, rating

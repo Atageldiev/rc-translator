@@ -16,7 +16,7 @@ async def send_all(message: Message):
 
 @dp.message_handler(state=Admin.send_message_all)
 async def state_send_message_all(message: Message, state: FSMContext):
-    for el in db.get_user_ids():
+    for el in db.user_ids:
         await bot.send_message(chat_id=el, text=message.text)
 
     for admin in settings.ADMINS:

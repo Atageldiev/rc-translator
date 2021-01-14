@@ -1,0 +1,179 @@
+{
+  "default": [
+    {
+      "text": "Глагол | Verb",
+      "callback_data": "verb"
+    },
+    {
+      "text": "Артикли | Articles",
+      "callback_data": "articles"
+    },
+    {
+      "text": "Существительное | Noun",
+      "callback_data": "noun"
+    },
+    {
+      "text": "Прилагательное | Adjective",
+      "callback_data": "adjective"
+    },
+    {
+      "text": "Местоимение | Pronoun",
+      "callback_data": "pronoun"
+    },
+    {
+      "text": "Числительное | Numeral",
+      "callback_data": "numeral"
+    },
+    {
+      "text": "Наречие | Adverb",
+      "callback_data": "adverb"
+    },
+    {
+      "text": "Предлог | Preposition",
+      "callback_data": "preposition"
+    },
+    {
+      "text": "Союз | Conjunction",
+      "callback_data": "conjunction"
+    },
+    {
+      "text": "Частица | Particles",
+      "callback_data": "particles"
+    },
+    {
+      "text": "Междометие | Interjections",
+      "url": "https://www.native-english.ru/grammar/english-interjections"
+    },
+    {
+      "text": "Члены предложения | Parts of a sentence",
+      "callback_data": "parts"
+    },
+    {
+      "text": "Простые предложения | Simple sentences",
+      "callback_data": "simple_sentences"
+    },
+    {
+      "text": "Сложные предложения | Complex sentences",
+      "callback_data": "complex_sentences"
+    },
+    {
+      "text": "Косвенная речь | Indirect speech",
+      "callback_data": "indirect_speech"
+    },
+    {
+      "text": "Пунктуация | Punctuation",
+      "url": "https://www.native-english.ru/grammar/english-punctuation"
+    }
+  ],
+  "articles": "https://www.native-english.ru/grammar/english-articles",
+  "verb": "https://www.native-english.ru/grammar/english-verbs",
+  "noun": "https://www.native-english.ru/grammar/english-nouns",
+  "adjective": "https://www.native-english.ru/grammar/english-adjectives",
+  "pronoun": "https://www.native-english.ru/grammar/english-pronouns",
+  "numeral": "https://www.native-english.ru/grammar/english-numerals",
+  "adverb": "https://www.native-english.ru/grammar/english-adverbs",
+  "preposition": "https://www.native-english.ru/grammar/english-prepositions",
+  "conjunction": "https://www.native-english.ru/grammar/english-conjunctions",
+  "particles": [
+    {
+      "text": "Определение частицы | Definition of the particles",
+      "url": "https://www.native-english.ru/grammar/english-particles"
+    },
+    {
+      "text": "Различие частиц | Difference of the particles",
+      "url": "https://www.native-english.ru/grammar/particles-differ"
+    }
+  ],
+  "parts": [
+    {
+      "text": "Главные | Main",
+      "callback_data": "main_parts"
+    },
+    {
+      "text": "Второстепенные | Secondary",
+      "callback_data": "secondary_parts"
+    }
+  ],
+  "main_parts": [
+    {
+      "text": "Подлежащее | Subject",
+      "url": "https://www.native-english.ru/grammar/english-subject"
+    },
+    {
+      "text": "Сказуемое | Predicate",
+      "url": "https://www.native-english.ru/grammar/english-predicate"
+    }
+  ],
+  "secondary_parts": [
+    {
+      "text": "Дополнение | Object",
+      "url": "https://www.native-english.ru/grammar/english-object"
+    },
+    {
+      "text": "Определение | Attribute",
+      "url": "https://www.native-english.ru/grammar/english-attribute"
+    },
+    {
+      "text": "Обстоятельство | Adverbial",
+      "url": "https://www.native-english.ru/grammar/english-adverbial"
+    },
+    {
+      "text": "Не члены предложения | Not parts of a sentence",
+      "url": "https://www.native-english.ru/grammar/not-sentence"
+    }
+  ],
+  "simple_sentences": [
+    {
+      "text": "Определение | Definition",
+      "url": "https://www.native-english.ru/grammar/simple-sentences"
+    },
+    {
+      "text": "Порядок слов | Word order",
+      "url": "https://www.native-english.ru/grammar/word-order"
+    },
+    {
+      "text": "Инверсия | Inversion",
+      "url": "https://www.native-english.ru/grammar/inversion"
+    },
+    {
+      "text": "Общий вопрос | General question",
+      "url": "https://www.native-english.ru/grammar/general-questions"
+    },
+    {
+      "text": "Специальный вопрос | Special questions",
+      "url": "https://www.native-english.ru/grammar/special-questions"
+    },
+    {
+      "text": "Повелительное предложение | Imperative sentence",
+      "url": "https://www.native-english.ru/grammar/imperative-sentences"
+    },
+    {
+      "text": "Восклицательное предложение | Exclamatory sentence",
+      "url": "https://www.native-english.ru/grammar/exclamatory-sentences"
+    }
+  ],
+  "complex_sentences": [
+    {
+      "text": "Сложносочиненное | Compound",
+      "url": "https://www.native-english.ru/grammar/compound-sentences"
+    },
+    {
+      "text": "Сложноподчиненное | Complex",
+      "url": "https://www.native-english.ru/grammar/complex-sentences"
+    },
+    {
+      "text": "Условное | Conditional",
+      "url": "https://www.native-english.ru/grammar/conditional-sentences"
+    }
+  ],
+  "indirect_speech": [
+    {
+      "text": "Определение | Definition",
+      "url": "https://www.native-english.ru/grammar/indirect-speech"
+    },
+    {
+      "text": "Согласование времен | Sequence of tenses",
+      "url": "https://www.native-english.ru/grammar/sequence-of-tenses"
+    }
+  ]
+}
