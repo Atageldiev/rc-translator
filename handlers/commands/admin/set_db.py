@@ -6,10 +6,8 @@ from loader import dp, bot
 from utils import Admin
 from utils.decorators import typing_action
 
-ADMIN_ID = settings.ADMIN_ID
 
-
-@dp.message_handler(lambda message: message.from_user.id == ADMIN_ID, commands="set_db", commands_prefix="!")
+@dp.message_handler(lambda message: message.from_user.id in settings.ADMINS, commands="set_db", commands_prefix="!")
 @typing_action
 async def set_db(message: Message):
     state = dp.current_state(user=message.from_user.id)

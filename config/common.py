@@ -1,6 +1,6 @@
 from pathlib import Path
 
-ADMIN_ID = 399344900
+ADMINS = [399344900]
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

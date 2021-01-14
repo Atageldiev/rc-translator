@@ -7,32 +7,28 @@ from aiogram.types import (
 
 from core.conf import settings
 from loader import dp, db, parser
-from modules import get_translation, get_src
-
-LANGCODES, LANGS, ALLOWED_LANGS = settings.LANGCODES, settings.LANGS, settings.ALLOWED_LANGS
+from utils.translator import get_translation, get_src
+from utils.decorators import check_user_existance
 
 
 @dp.message_handler()
+@check_user_existance
 async def sentence(message: Message):
-    db.user_exists()
     db.update_value("words_translated")
     text = message.text
 
     if len(text.split()) == 1:
         src = get_src(text)
-        src = LANGS.get(src)
+        src = settings.LANGS.get(src)
         data = {
             "num": 3,
             "src": src,
             "word": text
         }
-        await dp.storage.update_data(
-            user=message.from_user.id,
-            data=data
-        )
+        await dp.storage.update_data(user=message.from_user.id, data=data)
         markup = InlineKeyboardMarkup(row_width=2)
-        for el in ALLOWED_LANGS.get(src):
-            markup.insert(IKB(text=el, callback_data=LANGCODES.get(el)))
+        for el in settings.ALLOWED_LANGS.get(src):
+            markup.insert(IKB(text=el, callback_data=settings.LANGCODES.get(el)))
     else:
         markup = InlineKeyboardMarkup()
         markup.add(IKB(text="Кнопок нет", callback_data="None"))
@@ -72,8 +68,7 @@ async def send_examples(call: CallbackQuery):
     data = await dp.storage.get_data(user=user_id)
 
     if call.data != "more_examples":
-        dest = LANGS.get(call.data)
-
+        dest = settings.LANGS.get(call.data)
         await dp.storage.update_data(user=user_id, data={"dest": dest})
 
     num = data["num"]
