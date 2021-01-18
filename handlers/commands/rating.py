@@ -1,19 +1,19 @@
-from aiogram.dispatcher.filters import Command
 from aiogram.types import Message
 
-from core.conf import dp
+from library.formatters import bold_underlined, cursive
+from library.handlers.class_based import CommandHandler
 from utils.database import db
 from utils.decorators import typing_action, check_user_existance
 
 
-@dp.message_handler(Command("rating"))
-@typing_action
-@check_user_existance
-async def rating(message: Message):
-    name = message.from_user.first_name
-    words_translated = db.words_translated
-    grammar_used = db.grammar_used
+class RatingHandler(CommandHandler):
+    decorators = [typing_action, check_user_existance]
 
-    await message.answer(f"<b><u>{name}</u></b>, ваша статистика:\n\
-    <em>Слов переведено:</em>- {words_translated}\n \
-    <em>Помощника по грамматике использовано:</em>- {grammar_used}")
+    async def handle(self, message: Message):
+        name = message.from_user.first_name
+        words_translated = db.words_translated
+        grammar_used = db.grammar_used
+
+        await message.answer(f"{bold_underlined(name)}, ваша статистика:\n"
+                             f"     {cursive('Слов переведено')} - {words_translated}\n"
+                             f"     {cursive('Помощника по грамматике использовано')} - {grammar_used}")

@@ -1,90 +1,60 @@
 from aiogram.types import (
-    Message, ChatActions,
-    CallbackQuery,
-    InlineKeyboardMarkup,
-    InlineKeyboardButton as IKB
+    Message, CallbackQuery
 )
 
-from core.conf import dp, settings
+from core.conf import dp, settings, storage
+from library.formatters import bold
+from utils.buttons import get_ikb
 from utils.database import db
-from utils.decorators import check_user_existance
-from utils.parser import parse_examples
-from utils.translator import get_translation, get_src
+from utils.decorators import check_user_existance, typing_action
+from utils.translator import translate, detect
 
 
 @dp.message_handler()
+@typing_action
 @check_user_existance
 async def sentence(message: Message):
     db.words_translated += 1
     text = message.text
 
-    if len(text.split()) == 1:
-        src = get_src(text)
-        src = settings.LANGS.get(src)
-        data = {
-            "num": 3,
-            "src": src,
-            "word": text
-        }
-        await dp.storage.update_data(user=message.from_user.id, data=data)
-        markup = InlineKeyboardMarkup(row_width=2)
-        for el in settings.ALLOWED_LANGS.get(src):
-            markup.insert(IKB(text=el, callback_data=settings.LANGCODES.get(el)))
-    else:
-        markup = InlineKeyboardMarkup()
-        markup.add(IKB(text="Кнопок нет", callback_data="None"))
+    message_template = f"Результаты: \n" \
+                       f"     {bold('Русский')} - {translate(text, dest='ru')}\n" \
+                       f"     {bold('English')} - {translate(text, dest='en')}\n" \
+                       f"     {bold('Français')} - {translate(text, dest='fr')}\n" \
+                       f"     {bold('Deutsch')} - {translate(text, dest='de')}\n" \
+                       f"     {bold('Español')} - {translate(text, dest='es')}\n\n"
 
-    await ChatActions.typing()
-    res_ru = get_translation(text=text, dest="ru")
-    res_en = get_translation(text=text, dest="en")
-    res_fr = get_translation(text=text, dest="fr")
-    res_de = get_translation(text=text, dest="de")
-    res_es = get_translation(text=text, dest="es")
+    if len(text.split()) > 1:
+        return await message.answer(text=message_template)
 
-    await ChatActions.typing()
-    await message.answer(
-        text=f"Результаты: \n\
-        <b> Русский </b> - {res_ru}\n\
-        <b> English </b> - {res_en}\n\
-        <b> Français </b> - {res_fr}\n\
-        <b> Deutsch </b> - {res_de}\n\
-        <b> Español </b > - {res_es}\n\nНажми на кнопку, чтобы получить примеры",
-        reply_markup=markup
-    )
+    src = settings.LANGS.get(detect(text))
+    await storage.update_data(user=message.from_user.id, data={"num": 3, "src": src, "word": text})
+
+    button_data = [
+        {"text": el, "callback_data": settings.LANGCODES.get(el)} for el in settings.ALLOWED_LANGS.get(src)
+    ]
+    await message.answer(text=message_template + "Нажми на кнопку, чтобы получить примеры",
+                         reply_markup=get_ikb(button_data))
 
 
-@dp.callback_query_handler(text="more_examples")
-@dp.callback_query_handler(text="ru")
-@dp.callback_query_handler(text="en")
-@dp.callback_query_handler(text="fr")
-@dp.callback_query_handler(text="de")
-@dp.callback_query_handler(text="es")
-@dp.callback_query_handler(text="ja")
-@dp.callback_query_handler(text="ar")
-@dp.callback_query_handler(text="it")
-@dp.callback_query_handler(text="tr")
-@dp.callback_query_handler(text="zh-cn")
+@dp.callback_query_handler(text=["more_examples", *[lang_key for lang_key in settings.LANGS.keys()]])
 async def send_examples(call: CallbackQuery):
-    user_id = call.from_user.id
-    data = await dp.storage.get_data(user=user_id)
-
-    if call.data != "more_examples":
-        dest = settings.LANGS.get(call.data)
-        await dp.storage.update_data(user=user_id, data={"dest": dest})
-
-    num = data["num"]
-    await dp.storage.update_data(user=user_id, data={"num": num + 3})
-    data = await dp.storage.get_data(user=user_id)
-
-    await call.answer("Loading...")
-
-    text, markup = parse_examples(data, data["num"])
-    if text != "Вот примеры\n":
-        await call.message.answer(text=text, reply_markup=markup)
-    else:
-        await call.message.edit_text(text="Все примеры показаны", reply_markup=None)
-
-
-@dp.callback_query_handler(text="None")
-async def none_call_data(call: CallbackQuery):
-    await call.answer(text="При переводе предложений кнопки не поддерживаются", show_alert=True)
+    # user_id = call.from_user.id
+    # data = await storage.get_data(user=user_id)
+    await call.message.answer("На доработке!")
+    #
+    # if call.data != "more_examples":
+    #     dest = settings.LANGS.get(call.data)
+    #     await storage.update_data(user=user_id, data={"dest": dest})
+    #
+    # num = data["num"]
+    # await storage.update_data(user=user_id, data={"num": num + 3})
+    # data = await storage.get_data(user=user_id)
+    #
+    # await call.answer("Loading...")
+    #
+    # text, markup = parse_examples(data, data["num"])
+    # if text != "Вот примеры\n":
+    #     await call.message.answer(text=text, reply_markup=markup)
+    # else:
+    #     await call.message.edit_text(text="Все примеры показаны", reply_markup=None)

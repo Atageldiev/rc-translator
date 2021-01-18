@@ -11,3 +11,5 @@ settings = importlib.import_module(os.getenv("BOT_SETTINGS_MODULE"))
 
 bot = Bot(token=getattr(settings, "TOKEN"), parse_mode="HTML")
 dp = Dispatcher(bot, storage=MemoryStorage())
+
+storage = dp.storage

@@ -1,11 +1,12 @@
-from googletrans import Translator
+from google_trans_new import google_translator
 
-translator = Translator()
-
-
-def get_translation(text, dest: str = ""):
-    return translator.translate(text, dest=dest).text
+translator = google_translator()
 
 
-def get_src(text):
-    return translator.translate(text).src
+def translate(text, dest: str = ""):
+    translation = translator.translate(text, lang_tgt=dest)
+    return " && ".join(translation) if isinstance(translation, list) else translation
+
+
+def detect(text):
+    return translator.detect(text)[0]
