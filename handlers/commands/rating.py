@@ -8,6 +8,7 @@ from utils.decorators import typing_action, check_user_existance
 
 class RatingHandler(CommandHandler):
     decorators = [typing_action, check_user_existance]
+    commands = ["rating"]
 
     async def handle(self, message: Message):
         await message.answer(f"{bold_underlined(message.from_user.first_name)}, ваша статистика:\n"

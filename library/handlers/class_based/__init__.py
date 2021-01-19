@@ -1,1 +1,2 @@
-from .command_handler import CommandHandler
+from .command import CommandHandler
+from .message import MessageHandler

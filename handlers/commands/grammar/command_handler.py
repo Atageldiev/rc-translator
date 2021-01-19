@@ -7,6 +7,7 @@ from .utils import get_markup_by_key_from_json
 
 
 class GrammarHandler(CommandHandler):
+    commands = "grammar"
     decorators = [typing_action, check_user_existance]
 
     async def handle(self, message: Message):
@@ -14,10 +15,3 @@ class GrammarHandler(CommandHandler):
 
         markup = await get_markup_by_key_from_json("default")
         await message.answer("Выберите насчет чего вы хотите получить готовую информацию: ", reply_markup=markup)
-
-
-class FuckYouBitchHandler(CommandHandler):
-    decorators = [typing_action]
-
-    async def handle(self, message: Message):
-        await message.answer("GO FUCK YOURSELF YO BITCH!")

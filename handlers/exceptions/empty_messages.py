@@ -2,6 +2,7 @@ from aiogram.types import Message, CallbackQuery
 
 from core.conf import dp, storage, LANGCODES, ALLOWED_LANGS
 from library.formatters import bold
+from library.handlers.class_based import MessageHandler
 from utils.buttons import get_ikb
 from utils.database import db
 from utils.decorators import check_user_existance, typing_action
@@ -10,32 +11,30 @@ from utils.parser import parse_examples
 from utils.translator import translate, detect
 
 
-@dp.message_handler()
-@typing_action
-@check_user_existance
-async def empty_message(message: Message):
-    db.translated += 1
-    text = message.text
+class EmptyMessageHandler(MessageHandler):
+    decorators = [typing_action, check_user_existance]
 
-    message_template = f"Результаты: \n" \
-                       f"     {bold('Русский')} - {translate(text, dest='ru')}\n" \
-                       f"     {bold('English')} - {translate(text, dest='en')}\n" \
-                       f"     {bold('Français')} - {translate(text, dest='fr')}\n" \
-                       f"     {bold('Deutsch')} - {translate(text, dest='de')}\n" \
-                       f"     {bold('Español')} - {translate(text, dest='es')}\n\n"
+    async def handle(self, message: Message):
+        db.translated += 1
+        text = message.text
 
-    # If got a sentence
-    if len(text.split()) > 1:
-        return await message.answer(text=message_template)
+        message_template = f"Результаты: \n" \
+                           f"     {bold('Русский')} - {translate(text, dest='ru')}\n" \
+                           f"     {bold('English')} - {translate(text, dest='en')}\n" \
+                           f"     {bold('Français')} - {translate(text, dest='fr')}\n" \
+                           f"     {bold('Deutsch')} - {translate(text, dest='de')}\n" \
+                           f"     {bold('Español')} - {translate(text, dest='es')}\n\n"
 
-    src = get_key_by_value(detect(text), LANGCODES)
-    await storage.update_data(user=message.from_user.id, data={"num": 3, "src": src, "word": text})
+        # If got a sentence
+        if len(text.split()) > 1:
+            return await message.answer(text=message_template)
 
-    button_data = [
-        {"text": el, "callback_data": LANGCODES.get(el)} for el in ALLOWED_LANGS.get(src)
-    ]
-    await message.answer(text=message_template + "Нажми на кнопку, чтобы получить примеры",
-                         reply_markup=get_ikb(button_data))
+        src = get_key_by_value(detect(text), LANGCODES)
+        await storage.update_data(user=message.from_user.id, data={"num": 3, "src": src, "word": text})
+
+        button_data = [{"text": el, "callback_data": LANGCODES.get(el)} for el in ALLOWED_LANGS.get(src)]
+        await message.answer(text=message_template + "Нажми на кнопку, чтобы получить примеры",
+                             reply_markup=get_ikb(button_data))
 
 
 @dp.callback_query_handler(text=["more_examples", *[lang_key for lang_key in LANGCODES.values()]])
