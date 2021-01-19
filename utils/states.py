@@ -22,7 +22,6 @@ class Admin(StatesGroup):
     message_one_text = State()
 
     send_message_all = State()
-    setDB = State()
 
 
 class LearningModeState(StatesGroup):
