@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from dotenv import load_dotenv
 
-DEBUG = False
+DEBUG = True
 if DEBUG:
     TOKEN = "1397404758:AAEBfHXgaxWM0j-FGnsFsUxQjo4sMuyEz5Q"
 else:
@@ -30,7 +30,6 @@ DATABASE = {
     "password": os.getenv("DB_PASS"),
     "db_name": os.getenv("DB_DB")
 }
-
 
 LANGCODES = {
     "русский": "ru",

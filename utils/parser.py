@@ -2,6 +2,8 @@ import requests
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bs4 import BeautifulSoup
 
+from utils.buttons import get_ikb
+
 HEADERS = {'user-agent': 'my-app/0.0.1'}
 
 
@@ -29,15 +31,10 @@ def parse_examples(data, num):
         msg = "Вот примеры\n"
         html = html.select('.example')[num - 2:num + 1]
         for el in html:
-            text1 = el.select('.ltr.src')
-            text2 = el.select('.ltr.trg')
+            msg += "---" + __get_text(el.select('.src')[0].text) + "\n"
+            msg += "---" + __get_text(el.select('.trg')[0].text) + "\n\n"
 
-            msg += "---" + __get_text(text1[0].text) + "\n"
-            msg += "---" + __get_text(text2[0].text) + "\n\n"
-
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton(text="Еще примеры", callback_data="more_examples"))
-        return msg, markup
+        return msg, get_ikb({"text": "Еще примеры", "callback_data": "more_examples"})
     else:
         return "ERROR, TRY AGAIN", None
 

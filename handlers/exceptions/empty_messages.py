@@ -6,6 +6,7 @@ from utils.buttons import get_ikb
 from utils.database import db
 from utils.decorators import check_user_existance, typing_action
 from utils.other import get_key_by_value
+from utils.parser import parse_examples
 from utils.translator import translate, detect
 
 
@@ -39,21 +40,20 @@ async def empty_message(message: Message):
 
 @dp.callback_query_handler(text=["more_examples", *[lang_key for lang_key in LANGCODES.values()]])
 async def send_examples(call: CallbackQuery):
-    # user_id = call.from_user.id
-    # data = await storage.get_data(user=user_id)
-    await call.message.answer("На доработке!")
-    # if call.data != "more_examples":
-    #     dest = settings.LANGS.get(call.data)
-    #     await storage.update_data(user=user_id, data={"dest": dest})
-    #
-    # num = data["num"]
-    # await storage.update_data(user=user_id, data={"num": num + 3})
-    # data = await storage.get_data(user=user_id)
-    #
-    # await call.answer("Loading...")
-    #
-    # text, markup = parse_examples(data, data["num"])
-    # if text != "Вот примеры\n":
-    #     await call.message.answer(text=text, reply_markup=markup)
-    # else:
-    #     await call.message.edit_text(text="Все примеры показаны", reply_markup=None)
+    user_id = call.from_user.id
+    data = await storage.get_data(user=user_id)
+    if call.data != "more_examples":
+        dest = get_key_by_value(call.data, LANGCODES)
+        await storage.update_data(user=user_id, data={"dest": dest})
+
+    num = data["num"]
+    await storage.update_data(user=user_id, data={"num": num + 3})
+    data = await storage.get_data(user=user_id)
+
+    await call.answer("Loading...")
+
+    text, markup = parse_examples(data, data["num"])
+    if text != "Вот примеры\n":
+        await call.message.answer(text=text, reply_markup=markup)
+    else:
+        await call.message.edit_text(text="Все примеры показаны", reply_markup=None)
