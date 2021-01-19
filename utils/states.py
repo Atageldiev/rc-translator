@@ -25,5 +25,5 @@ class Admin(StatesGroup):
     setDB = State()
 
 
-class LearningMode(StatesGroup):
+class LearningModeState(StatesGroup):
     mode = State()

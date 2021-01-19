@@ -1,19 +1,18 @@
-from aiogram.types import (
-    Message, CallbackQuery
-)
+from aiogram.types import Message, CallbackQuery
 
-from core.conf import dp, settings, storage
+from core.conf import dp, storage, LANGCODES, ALLOWED_LANGS
 from library.formatters import bold
 from utils.buttons import get_ikb
 from utils.database import db
 from utils.decorators import check_user_existance, typing_action
+from utils.other import get_key_by_value
 from utils.translator import translate, detect
 
 
 @dp.message_handler()
 @typing_action
 @check_user_existance
-async def sentence(message: Message):
+async def empty_message(message: Message):
     db.words_translated += 1
     text = message.text
 
@@ -24,25 +23,25 @@ async def sentence(message: Message):
                        f"     {bold('Deutsch')} - {translate(text, dest='de')}\n" \
                        f"     {bold('Español')} - {translate(text, dest='es')}\n\n"
 
+    # If got a sentence
     if len(text.split()) > 1:
         return await message.answer(text=message_template)
 
-    src = settings.LANGS.get(detect(text))
+    src = get_key_by_value(detect(text), LANGCODES)
     await storage.update_data(user=message.from_user.id, data={"num": 3, "src": src, "word": text})
 
     button_data = [
-        {"text": el, "callback_data": settings.LANGCODES.get(el)} for el in settings.ALLOWED_LANGS.get(src)
+        {"text": el, "callback_data": LANGCODES.get(el)} for el in ALLOWED_LANGS.get(src)
     ]
     await message.answer(text=message_template + "Нажми на кнопку, чтобы получить примеры",
                          reply_markup=get_ikb(button_data))
 
 
-@dp.callback_query_handler(text=["more_examples", *[lang_key for lang_key in settings.LANGS.keys()]])
+@dp.callback_query_handler(text=["more_examples", *[lang_key for lang_key in LANGCODES.values()]])
 async def send_examples(call: CallbackQuery):
     # user_id = call.from_user.id
     # data = await storage.get_data(user=user_id)
     await call.message.answer("На доработке!")
-    #
     # if call.data != "more_examples":
     #     dest = settings.LANGS.get(call.data)
     #     await storage.update_data(user=user_id, data={"dest": dest})

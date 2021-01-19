@@ -1,11 +1,8 @@
-import logging
 import requests
-
-from bs4 import BeautifulSoup as BS
-
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from bs4 import BeautifulSoup
 
-from core.conf import settings
+HEADERS = {'user-agent': 'my-app/0.0.1'}
 
 
 def __get_text(text):
@@ -19,8 +16,8 @@ def __get_html(data):
     word = data["word"]
 
     url = f"https://context.reverso.net/перевод/{src}-{dest}/{word}"
-    response = requests.get(url, headers=settings.HEADERS)
-    html = BS(response.content, "html.parser")
+    response = requests.get(url, headers=HEADERS)
+    html = BeautifulSoup(response.content, "html.parser")
     return html
 
 
@@ -76,8 +73,8 @@ def parse_translations(data):
 
 async def parse_native_english(message, url):
     """Parses native-english.ru, and gets links to the websites about requested rule of english"""
-    response = requests.get(url, headers=settings.HEADERS)
-    html = BS(response.content, "html.parser")
+    response = requests.get(url, headers=HEADERS)
+    html = BeautifulSoup(response.content, "html.parser")
 
     html = html.select('.list__item > a')
     if html:
@@ -95,5 +92,4 @@ async def parse_native_english(message, url):
             "Вот что я нашел:\nНажмите на соответствующую кнопку, чтобы перейти на сайт и почитать подробнее",
             reply_markup=markup)
     else:
-        logging.critical("NATIVE ENGLISH HAS CHANGED ITS ARCHITECTURE")
         await message.answer("FATAL ERROR.\n\nPlease text my father\n\nLink is in my description")

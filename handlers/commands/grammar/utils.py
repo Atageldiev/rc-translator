@@ -1,12 +1,11 @@
 import json
 import os
 
-import aiofiles
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton as IKB
 
-from core.conf import settings
+from core.conf import BASE_DIR
 
-JSONS_DIR = os.path.join(settings.BASE_DIR, "handlers/commands/grammar")
+JSONS_DIR = os.path.join(BASE_DIR, "handlers/commands/grammar")
 
 
 def get_json_data(filename):

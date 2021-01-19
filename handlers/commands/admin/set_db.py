@@ -1,12 +1,12 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 
-from core.conf import dp, bot, settings
+from core.conf import dp, bot, ADMINS
 from utils import Admin
 from utils.decorators import typing_action
 
 
-@dp.message_handler(lambda message: message.from_user.id in settings.ADMINS, commands="set_db", commands_prefix="!")
+@dp.message_handler(lambda message: message.from_user.id in ADMINS, commands="set_db", commands_prefix="!")
 @typing_action
 async def set_db(message: Message):
     state = dp.current_state(user=message.from_user.id)

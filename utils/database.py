@@ -1,9 +1,7 @@
-import logging
-
 from aiogram.types import User
 from pymongo import MongoClient
 
-from core.conf import settings
+from core.conf import DATABASE
 
 
 class Database:
@@ -12,9 +10,9 @@ class Database:
 
     def __init__(self):
         cluster = MongoClient(f"mongodb+srv://"
-                              f"{settings.DB_USER}:{settings.DB_PASS}"
+                              f"{DATABASE.get('user')}:{DATABASE.get('password')}"
                               f"@rc-translator.d217k.mongodb.net/"
-                              f"{settings.DB_DB}?retryWrites=true&w=majority")
+                              f"{DATABASE.get('db_name')}?retryWrites=true&w=majority")
         self.collection = cluster["rc-translator"]["status"]
 
     def user_exists(self):
@@ -36,7 +34,6 @@ class Database:
                     "grammar_used": 0,
                     "word_id": 0
                 })
-            logging.info("User has been added")
 
     @property
     def user_ids(self):

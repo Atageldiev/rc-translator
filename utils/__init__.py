@@ -1,1 +1,1 @@
-from .states import Word, Sentence, Admin, LearningMode
+from .states import Word, Sentence, Admin, LearningModeState
