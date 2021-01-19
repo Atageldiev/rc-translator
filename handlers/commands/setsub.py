@@ -6,7 +6,7 @@ from aiogram.types import (
 )
 
 from core.conf import dp
-from utils import LearningModeState
+from utils.states import LearningModeState
 from utils.buttons import get_ikb
 from utils.database import db
 from utils.decorators import typing_action, check_user_existance

@@ -2,7 +2,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 
 from core.conf import dp, bot, ADMINS
-from utils import Admin
+from utils.states import Admin
 from utils.decorators import typing_action
 
 

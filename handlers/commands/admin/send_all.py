@@ -3,7 +3,7 @@ from aiogram.types import Message
 
 from core.conf import dp, bot, ADMINS
 from utils.database import db
-from utils import Admin
+from utils.states import Admin
 from utils.decorators import typing_action
 
 

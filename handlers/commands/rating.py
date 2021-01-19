@@ -10,10 +10,6 @@ class RatingHandler(CommandHandler):
     decorators = [typing_action, check_user_existance]
 
     async def handle(self, message: Message):
-        name = message.from_user.first_name
-        words_translated = db.words_translated
-        grammar_used = db.grammar_used
-
-        await message.answer(f"{bold_underlined(name)}, ваша статистика:\n"
-                             f"     {cursive('Слов переведено')} - {words_translated}\n"
-                             f"     {cursive('Помощника по грамматике использовано')} - {grammar_used}")
+        await message.answer(f"{bold_underlined(message.from_user.first_name)}, ваша статистика:\n"
+                             f"     {cursive('Слов переведено')} - {db.translated}\n"
+                             f"     {cursive('Помощника по грамматике использовано')} - {db.grammar_used}")

@@ -14,7 +14,7 @@ from utils.translator import translate, detect
 @typing_action
 @check_user_existance
 async def empty_message(message: Message):
-    db.words_translated += 1
+    db.translated += 1
     text = message.text
 
     message_template = f"Результаты: \n" \

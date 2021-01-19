@@ -17,7 +17,6 @@ class Database:
 
     def user_exists(self):
         """Checks if the user is already in DB, adds if he is not"""
-        name = self.user.first_name
         user_id = self.user.id
 
         if not self.collection.find_one({"_id": user_id}):
@@ -25,21 +24,19 @@ class Database:
                 {
                     # user-info:
                     "_id": user_id,
-                    "name": name,
+                    "name": self.user.first_name,
                     # status:
                     "subbed": True,
                     "learning_mode": 1,
                     # rating:
-                    "words_translated": 0,
+                    "translated": 0,
                     "grammar_used": 0,
-                    "word_id": 0
                 })
 
     @property
     def user_ids(self):
         """Returns a list of all user_ids found in DB"""
-        data = self.collection.find({})
-        return [x["_id"] for x in data]
+        return [x["_id"] for x in self.collection.find({})]
 
     def clear(self):
         """Delete everything in DB"""
