@@ -58,3 +58,7 @@ class Database:
 
 
 db = Database()
+
+
+def get_db():
+    return Database()

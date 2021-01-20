@@ -17,3 +17,7 @@ file_handler.setFormatter(formatter)
 logger.setLevel(logging.INFO)
 if not DEBUG:
     logger.addHandler(file_handler)
+
+
+def get_logger():
+    return logging.getLogger("main")
