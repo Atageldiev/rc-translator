@@ -1,15 +1,13 @@
 from aiogram.types import Message, CallbackQuery
 
 from core.conf import Langs
-from core.conf.settings import dp, storage
+from core.conf.settings import dp, storage, EXAMPLES_ERROR_TEXT, EXAMPLES_ARE_DONE_TEXT
 from core.database import db
 from core.parser import get_message_text_by_parsing_examples
 from core.translator import translate, detect
 from utils.buttons import get_ikb
 from utils.decorators import typing_action, check_user_existance
 from utils.formatters import bold
-
-EXAMPLES_ARE_DONE_TEXT = "Вот примеры\n"
 
 
 def get_message_template(text):
@@ -76,5 +74,7 @@ async def send_examples(call: CallbackQuery):
     if text != EXAMPLES_ARE_DONE_TEXT:
         message_text = text
         markup = get_ikb({"text": "Еще примеры", "callback_data": "more_examples"})
+    elif text == EXAMPLES_ERROR_TEXT:
+        message_text = text
 
     await call.message.answer(text=message_text, reply_markup=markup)

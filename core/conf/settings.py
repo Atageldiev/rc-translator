@@ -30,3 +30,6 @@ DATABASE = {
     "password": os.getenv("DB_PASS"),
     "db_name": os.getenv("DB_DB")
 }
+
+EXAMPLES_ARE_DONE_TEXT = "Вот примеры\n"
+EXAMPLES_ERROR_TEXT = "ERROR, TRY AGAIN"

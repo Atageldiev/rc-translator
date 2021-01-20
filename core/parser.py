@@ -2,7 +2,7 @@ import requests
 from aiogram.types import User
 from bs4 import BeautifulSoup
 
-from core.conf.settings import storage
+from core.conf.settings import storage, EXAMPLES_ARE_DONE_TEXT, EXAMPLES_ERROR_TEXT
 from utils.buttons import get_ikb
 from utils.formatters import strip_text
 
@@ -26,11 +26,11 @@ async def get_current_user_data():
 
 async def get_message_after_parsing_examples(html, num: int) -> str:
     html = html[num - 2:num + 1]
-    msg = "Вот примеры\n"
+    msg = ""
     for el in html:
         msg += "---" + strip_text(el.select('.src')[0].text) + "\n"
         msg += "---" + strip_text(el.select('.trg')[0].text) + "\n\n"
-    return msg
+    return msg if msg else EXAMPLES_ARE_DONE_TEXT
 
 
 async def get_message_text_by_parsing_examples():
@@ -38,7 +38,7 @@ async def get_message_text_by_parsing_examples():
     data = await get_current_user_data()
     html = get_html(f"https://context.reverso.net/перевод/{data['src']}-{data['dest']}/{data['word']}") \
         .select(".example")
-    return await get_message_after_parsing_examples(html, data["examples_number"]) if html else "ERROR, TRY AGAIN"
+    return await get_message_after_parsing_examples(html, data["examples_number"]) if html else EXAMPLES_ERROR_TEXT
 
 
 def get_native_english_url(url) -> str:
