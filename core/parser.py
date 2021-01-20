@@ -38,7 +38,7 @@ async def get_message_text_by_parsing_examples():
     data = await get_current_user_data()
     html = get_html(f"https://context.reverso.net/перевод/{data['src']}-{data['dest']}/{data['word']}") \
         .select(".example")
-    return await get_message_after_parsing_examples(html, data["num"]) if html else "ERROR, TRY AGAIN"
+    return await get_message_after_parsing_examples(html, data["examples_number"]) if html else "ERROR, TRY AGAIN"
 
 
 def get_native_english_url(url) -> str:

@@ -39,7 +39,7 @@ async def handle_empty_message(message: Message):
     db.translated += 1
 
     src = Langs.BY_CODE.get(detect(message.text))
-    await storage.update_data(user=message.from_user.id, data={"num": 3, "src": src, "word": message.text})
+    await storage.update_data(user=message.from_user.id, data={"examples_number": 3, "src": src, "word": message.text})
 
     markup = get_ikb([{"text": lang, "callback_data": lang} for lang in Langs.get_allowed(src)])
     await message.answer(text=get_message_template(message.text) + "Нажми на кнопку, чтобы получить примеры",
@@ -63,10 +63,10 @@ async def send_examples(call: CallbackQuery):
 
     # If script was restarted, storage is clear.
     # So there is no any data about source, destination language and word itself
-    if "num" not in data:
+    if "examples_number" not in data:
         return await call.answer("These buttons are too old")
 
-    await storage.update_data(user=user_id, data={"num": data["num"] + 3})
+    await storage.update_data(user=user_id, data={"examples_number": data["examples_number"] + 3})
 
     await call.answer("Loading...")
     text = await get_message_text_by_parsing_examples()
