@@ -1,8 +1,8 @@
 import requests
+from aiogram.types import User
 from bs4 import BeautifulSoup
 
-from aiogram.types import User
-
+from core.conf.settings import storage
 from utils.buttons import get_ikb
 from utils.formatters import strip_text
 
@@ -14,19 +14,31 @@ def get_html(url) -> BeautifulSoup:
     return BeautifulSoup(response.content, "html.parser")
 
 
-def get_message_text_by_parsing_examples(data, num):
+def get_current_user():
+    """Returns current user instance"""
+    return User().get_current()
+
+
+async def get_current_user_data():
+    """Returns data from storage that belongs to current user"""
+    return await storage.get_data(user=get_current_user().id)
+
+
+async def get_message_after_parsing_examples(html, num: int) -> str:
+    html = html[num - 2:num + 1]
+    msg = "Вот примеры\n"
+    for el in html:
+        msg += "---" + strip_text(el.select('.src')[0].text) + "\n"
+        msg += "---" + strip_text(el.select('.trg')[0].text) + "\n\n"
+    return msg
+
+
+async def get_message_text_by_parsing_examples():
     """Parses only examples from context.reverso.net"""
+    data = await get_current_user_data()
     html = get_html(f"https://context.reverso.net/перевод/{data['src']}-{data['dest']}/{data['word']}") \
         .select(".example")
-    if html:
-        html = html[num - 2:num + 1]
-        msg = "Вот примеры\n"
-        for el in html:
-            msg += "---" + strip_text(el.select('.src')[0].text) + "\n"
-            msg += "---" + strip_text(el.select('.trg')[0].text) + "\n\n"
-        return msg
-    else:
-        return "ERROR, TRY AGAIN"
+    return await get_message_after_parsing_examples(html, data["num"]) if html else "ERROR, TRY AGAIN"
 
 
 def get_native_english_url(url) -> str:

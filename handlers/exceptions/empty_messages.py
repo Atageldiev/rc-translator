@@ -8,37 +8,44 @@ from utils.buttons import get_ikb
 from utils.formatters import bold
 from utils.other import get_key_by_value
 
+EXAMPLES_ARE_DONE_TEXT = "Вот примеры\n"
 
-@dp.message_handler()
+
+def get_message_tempalate(text):
+    return f"Результаты: \n" \
+           f"     {bold('Русский')} - {translate(text, dest='ru')}\n" \
+           f"     {bold('English')} - {translate(text, dest='en')}\n" \
+           f"     {bold('Français')} - {translate(text, dest='fr')}\n" \
+           f"     {bold('Deutsch')} - {translate(text, dest='de')}\n" \
+           f"     {bold('Español')} - {translate(text, dest='es')}\n\n" \
+           f"     {bold('Italian')} - {translate(text, dest='it')}\n\n"
+
+
+# Handle when got a sentence
+@dp.message_handler(lambda message: len(message.text.split()) > 1)
 async def handle_empty_message(message: Message):
     db.translated += 1
-    text = message.text
-
-    message_template = f"Результаты: \n" \
-                       f"     {bold('Русский')} - {translate(text, dest='ru')}\n" \
-                       f"     {bold('English')} - {translate(text, dest='en')}\n" \
-                       f"     {bold('Français')} - {translate(text, dest='fr')}\n" \
-                       f"     {bold('Deutsch')} - {translate(text, dest='de')}\n" \
-                       f"     {bold('Español')} - {translate(text, dest='es')}\n\n"
-
     # If got a sentence
-    if len(text.split()) > 1:
-        return await message.answer(text=message_template)
+    return await message.answer(text=get_message_tempalate(message.text))
 
-    src = get_key_by_value(detect(text), LANGCODES)
-    await storage.update_data(user=message.from_user.id, data={"num": 3, "src": src, "word": text})
+
+# Handle when got a single word
+@dp.message_handler(lambda message: len(message.text.split()) == 1)
+async def handle_empty_message(message: Message):
+    db.translated += 1
+
+    src = get_key_by_value(detect(message.text), LANGCODES)
+    await storage.update_data(user=message.from_user.id, data={"num": 3, "src": src, "word": message.text})
 
     button_data = [{"text": el, "callback_data": LANGCODES.get(el)} for el in ALLOWED_LANGS.get(src)]
-    await message.answer(text=message_template + "Нажми на кнопку, чтобы получить примеры",
+    await message.answer(text=get_message_tempalate(message.text) + "Нажми на кнопку, чтобы получить примеры",
                          reply_markup=get_ikb(button_data))
 
 
 @dp.callback_query_handler(text=[lang_key for lang_key in LANGCODES.values()])
-async def handle_get_examples(c: CallbackQuery):
-    user_id = c.from_user.id
-    await storage.update_data(user=user_id, data={"dest": get_key_by_value(c.data, LANGCODES)})
-
-    await send_examples(c)
+async def handle_get_examples(call: CallbackQuery):
+    await storage.update_data(user=call.from_user.id, data={"dest": get_key_by_value(call.data, LANGCODES)})
+    await send_examples(call)
 
 
 @dp.callback_query_handler(text=["more_examples"])
@@ -49,13 +56,21 @@ async def handle_get_more_examples(call: CallbackQuery):
 async def send_examples(call: CallbackQuery):
     user_id = call.from_user.id
     data = await storage.get_data(user=user_id)
+
+    # If script was restarted, storage is clear.
+    # So there is no any data about source, destination language and word itself
+    if "num" not in data:
+        return await call.answer("These buttons are too old")
+
     await storage.update_data(user=user_id, data={"num": data["num"] + 3})
-    data = await storage.get_data(user=user_id)
 
     await call.answer("Loading...")
-    text = get_message_text_by_parsing_examples(data, data["num"])
-    if text != "Вот примеры\n":
-        await call.message.answer(text=text,
-                                  reply_markup=get_ikb({"text": "Еще примеры", "callback_data": "more_examples"}))
-    else:
-        await call.message.answer(text="Все примеры показаны", reply_markup=None)
+    text = await get_message_text_by_parsing_examples()
+
+    message_text = "Все примеры показаны"
+    markup = None
+    if text != EXAMPLES_ARE_DONE_TEXT:
+        message_text = text
+        markup = get_ikb({"text": "Еще примеры", "callback_data": "more_examples"})
+
+    await call.message.answer(text=message_text, reply_markup=markup)
