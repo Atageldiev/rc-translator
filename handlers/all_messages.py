@@ -1,17 +1,18 @@
 from aiogram.types import Message, CallbackQuery
 
-from core.conf.settings import dp, storage, LANGCODES, ALLOWED_LANGS
+from core.conf import Langs
+from core.conf.settings import dp, storage
 from core.database import db
 from core.parser import get_message_text_by_parsing_examples
 from core.translator import translate, detect
 from utils.buttons import get_ikb
+from utils.decorators import typing_action, check_user_existance
 from utils.formatters import bold
-from utils.other import get_key_by_value
 
 EXAMPLES_ARE_DONE_TEXT = "Вот примеры\n"
 
 
-def get_message_tempalate(text):
+def get_message_template(text):
     return f"Результаты: \n" \
            f"     {bold('Русский')} - {translate(text, dest='ru')}\n" \
            f"     {bold('English')} - {translate(text, dest='en')}\n" \
@@ -23,28 +24,31 @@ def get_message_tempalate(text):
 
 # Handle when got a sentence
 @dp.message_handler(lambda message: len(message.text.split()) > 1)
+@typing_action
+@check_user_existance
 async def handle_empty_message(message: Message):
     db.translated += 1
-    # If got a sentence
-    return await message.answer(text=get_message_tempalate(message.text))
+    return await message.answer(text=get_message_template(message.text))
 
 
 # Handle when got a single word
 @dp.message_handler(lambda message: len(message.text.split()) == 1)
+@typing_action
+@check_user_existance
 async def handle_empty_message(message: Message):
     db.translated += 1
 
-    src = get_key_by_value(detect(message.text), LANGCODES)
+    src = Langs.BY_CODE.get(detect(message.text))
     await storage.update_data(user=message.from_user.id, data={"num": 3, "src": src, "word": message.text})
 
-    button_data = [{"text": el, "callback_data": LANGCODES.get(el)} for el in ALLOWED_LANGS.get(src)]
-    await message.answer(text=get_message_tempalate(message.text) + "Нажми на кнопку, чтобы получить примеры",
-                         reply_markup=get_ikb(button_data))
+    markup = get_ikb([{"text": lang, "callback_data": lang} for lang in Langs.get_allowed(src)])
+    await message.answer(text=get_message_template(message.text) + "Нажми на кнопку, чтобы получить примеры",
+                         reply_markup=markup)
 
 
-@dp.callback_query_handler(text=[lang_key for lang_key in LANGCODES.values()])
+@dp.callback_query_handler(text=[lang_key for lang_key in Langs.BY_NAME.keys()])
 async def handle_get_examples(call: CallbackQuery):
-    await storage.update_data(user=call.from_user.id, data={"dest": get_key_by_value(call.data, LANGCODES)})
+    await storage.update_data(user=call.from_user.id, data={"dest": call.data})
     await send_examples(call)
 
 
