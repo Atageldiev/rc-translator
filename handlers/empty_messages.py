@@ -17,7 +17,7 @@ def get_message_tempalate(text):
            f"     {bold('English')} - {translate(text, dest='en')}\n" \
            f"     {bold('Français')} - {translate(text, dest='fr')}\n" \
            f"     {bold('Deutsch')} - {translate(text, dest='de')}\n" \
-           f"     {bold('Español')} - {translate(text, dest='es')}\n\n" \
+           f"     {bold('Español')} - {translate(text, dest='es')}\n" \
            f"     {bold('Italian')} - {translate(text, dest='it')}\n\n"
 
 

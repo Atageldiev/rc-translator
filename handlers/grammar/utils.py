@@ -3,10 +3,10 @@ import os
 
 from aiogram.types import InlineKeyboardMarkup
 
-from core.conf.settings import BASE_DIR
 from utils.buttons import get_ikb
+from utils.path import get_current_dir
 
-JSONS_DIR = os.path.join(BASE_DIR, "handlers/commands/grammar")
+JSONS_DIR = get_current_dir(__file__)
 
 
 def load_json_by_filename(filename: str, fileroot=JSONS_DIR) -> dict:
