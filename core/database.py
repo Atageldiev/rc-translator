@@ -9,11 +9,14 @@ class Database:
     __slots__ = ["collection"]
 
     def __init__(self):
-        cluster = MongoClient(f"mongodb+srv://"
-                              f"{DATABASE.get('user')}:{DATABASE.get('password')}"
-                              f"@rc-translator.d217k.mongodb.net/"
-                              f"{DATABASE.get('db_name')}?retryWrites=true&w=majority")
+        cluster = self.__get_cluster(DATABASE.get("db_name"), DATABASE.get("user"), DATABASE.get("password"))
         self.collection = cluster["rc-translator"]["status"]
+
+    @staticmethod
+    def __get_cluster(db_name, user, password):
+        return MongoClient(f"mongodb+srv://{user}:{password}"
+                           f"@rc-translator.d217k.mongodb.net/"
+                           f"{db_name}?retryWrites=true&w=majority")
 
     def user_exists(self):
         """Checks if the user is already in DB, adds if he is not"""
