@@ -1,2 +1,2 @@
-from . import start, setsub, grammar, rating, cancel, admin, empty_messages
+from . import start, setsub, grammar, rating, cancel, admin, all_messages
 from .run import run_bot
