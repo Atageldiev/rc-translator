@@ -17,3 +17,8 @@ def bold_underlined(text):
 
 def cursive(text):
     return CURSIVE.format(text)
+
+
+def strip_text(text: str) -> str:
+    """Returns a text without any extra spaces anywhere"""
+    return " ".join(text.split())

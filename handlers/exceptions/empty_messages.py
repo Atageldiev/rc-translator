@@ -2,7 +2,7 @@ from aiogram.types import Message, CallbackQuery
 
 from core.conf.settings import dp, storage, LANGCODES, ALLOWED_LANGS
 from core.database import db
-from core.parser import parse_examples
+from core.parser import get_message_text_by_parsing_examples
 from core.translator import translate, detect
 from utils.buttons import get_ikb
 from utils.formatters import bold
@@ -33,22 +33,29 @@ async def handle_empty_message(message: Message):
                          reply_markup=get_ikb(button_data))
 
 
-@dp.callback_query_handler(text=["more_examples", *[lang_key for lang_key in LANGCODES.values()]])
+@dp.callback_query_handler(text=[lang_key for lang_key in LANGCODES.values()])
+async def handle_get_examples(c: CallbackQuery):
+    user_id = c.from_user.id
+    await storage.update_data(user=user_id, data={"dest": get_key_by_value(c.data, LANGCODES)})
+
+    await send_examples(c)
+
+
+@dp.callback_query_handler(text=["more_examples"])
+async def handle_get_more_examples(call: CallbackQuery):
+    await send_examples(call)
+
+
 async def send_examples(call: CallbackQuery):
     user_id = call.from_user.id
     data = await storage.get_data(user=user_id)
-    if call.data != "more_examples":
-        dest = get_key_by_value(call.data, LANGCODES)
-        await storage.update_data(user=user_id, data={"dest": dest})
-
-    num = data["num"]
-    await storage.update_data(user=user_id, data={"num": num + 3})
+    await storage.update_data(user=user_id, data={"num": data["num"] + 3})
     data = await storage.get_data(user=user_id)
 
     await call.answer("Loading...")
-
-    text, markup = parse_examples(data, data["num"])
+    text = get_message_text_by_parsing_examples(data, data["num"])
     if text != "Вот примеры\n":
-        await call.message.answer(text=text, reply_markup=markup)
+        await call.message.answer(text=text,
+                                  reply_markup=get_ikb({"text": "Еще примеры", "callback_data": "more_examples"}))
     else:
-        await call.message.edit_text(text="Все примеры показаны", reply_markup=None)
+        await call.message.answer(text="Все примеры показаны", reply_markup=None)
