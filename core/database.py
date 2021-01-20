@@ -1,7 +1,7 @@
 from aiogram.types import User
 from pymongo import MongoClient
 
-from core.conf import DATABASE
+from core.conf.settings import DATABASE
 
 
 class Database:

@@ -1,8 +1,8 @@
 from aiogram.types import CallbackQuery
 
-from core.conf import dp
+from core.conf.settings import dp
 from utils.formatters import bold
-from utils.parser import parse_native_english
+from core.parser import parse_native_english
 from .utils import load_json_by_filename, get_ikb_by_key_from_json
 
 callbacks: dict = load_json_by_filename("callbacks.json")

@@ -1,6 +1,6 @@
 from aiogram.types import Message, ChatActions
 
-from core.conf import dp, bot, ADMINS
+from core.conf.settings import dp, bot, ADMINS
 
 
 @dp.message_handler(lambda message: message.from_user.id in ADMINS, commands="send_log", commands_prefix="!")

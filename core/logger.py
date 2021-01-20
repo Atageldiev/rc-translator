@@ -1,7 +1,7 @@
 import logging
 import os
 
-from .conf import BASE_DIR, DEBUG
+from core.conf.settings import BASE_DIR, DEBUG
 
 logger = logging.getLogger("main")
 

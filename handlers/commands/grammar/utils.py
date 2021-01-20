@@ -3,7 +3,7 @@ import os
 
 from aiogram.types import InlineKeyboardMarkup
 
-from core.conf import BASE_DIR
+from core.conf.settings import BASE_DIR
 from utils.buttons import get_ikb
 
 JSONS_DIR = os.path.join(BASE_DIR, "handlers/commands/grammar")

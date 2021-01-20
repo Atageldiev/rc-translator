@@ -1,6 +1,6 @@
 from aiogram.types import Message, ContentType
 
-from core.conf import dp
+from core.conf.settings import dp
 from utils.decorators import typing_action
 
 

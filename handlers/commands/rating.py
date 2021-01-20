@@ -1,8 +1,8 @@
 from aiogram.dispatcher.filters import Command
 from aiogram.types import Message
 
-from core.conf import dp
-from utils.database import db
+from core.conf.settings import dp
+from core.database import db
 from utils.formatters import bold_underlined, cursive
 
 

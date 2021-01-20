@@ -1,6 +1,6 @@
 from aiogram.types import ChatActions
 
-from .database import db
+from core.database import db
 
 
 def typing_action(fn):

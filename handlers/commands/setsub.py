@@ -5,12 +5,12 @@ from aiogram.types import (
     ReplyKeyboardRemove, ReplyKeyboardMarkup
 )
 
-from core.conf import dp
-from utils.states import LearningModeState
+from core.conf.settings import dp
+from core.states import LearningModeState
 from utils.buttons import get_ikb
-from utils.database import db
+from core.database import db
 from utils.decorators import typing_action, check_user_existance
-from utils.learning_mode import LearningMode
+from core.conf.learning_mode import LearningMode
 
 
 @dp.message_handler(Command("setsub"))
