@@ -1,28 +1,24 @@
 from aiogram.types import CallbackQuery
 
 from core.conf import dp
+from utils.formatters import bold
 from utils.parser import parse_native_english
-from .utils import get_json_data, get_markup_by_key_from_json
+from .utils import load_json_by_filename, get_ikb_by_key_from_json
 
-callbacks: dict = get_json_data("callbacks.json")
-
-
-@dp.callback_query_handler(lambda call: call.data in callbacks.keys())
-async def handle_grammar_callbacks(call: CallbackQuery):
-    data = callbacks.get(call.data)
-    is_parsing_callback = isinstance(data, str) and data.startswith("https")
-
-    await call.answer("Loading...")
-    if is_parsing_callback:
-        return await handle_parsing_callbacks(call)
-
-    return await handle_markup_callbacks(call)
+callbacks: dict = load_json_by_filename("callbacks.json")
 
 
+def is_parsing_callback(cb_data: str) -> bool:
+    buttons_data = callbacks.get(cb_data)
+    return isinstance(buttons_data, str) and buttons_data.startswith("https")
+
+
+@dp.callback_query_handler(lambda call: call.data in callbacks.keys() and is_parsing_callback(call.data))
 async def handle_parsing_callbacks(call: CallbackQuery):
     await parse_native_english(call.message, url=callbacks.get(call.data))
 
 
+@dp.callback_query_handler(lambda call: call.data in callbacks.keys() and not is_parsing_callback(call.data))
 async def handle_markup_callbacks(call: CallbackQuery):
-    markup = await get_markup_by_key_from_json(call.data)
-    await call.message.answer("<b>Найденный материал: </b>", reply_markup=markup)
+    await call.message.answer(bold("Найденный материал: "),
+                              reply_markup=get_ikb_by_key_from_json(call.data, "callbacks.json"))

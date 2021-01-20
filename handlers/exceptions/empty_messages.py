@@ -1,7 +1,7 @@
 from aiogram.types import Message, CallbackQuery
 
 from core.conf import dp, storage, LANGCODES, ALLOWED_LANGS
-from library.formatters import bold
+from utils.formatters import bold
 from library.handlers.class_based import MessageHandler
 from utils.buttons import get_ikb
 from utils.database import db
