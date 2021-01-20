@@ -17,13 +17,11 @@ class Database:
 
     def user_exists(self):
         """Checks if the user is already in DB, adds if he is not"""
-        user_id = self.user.id
-
-        if not self.collection.find_one({"_id": user_id}):
+        if not self.collection.find_one({"_id": self.user.id}):
             self.collection.insert_one(
                 {
                     # user-info:
-                    "_id": user_id,
+                    "_id": self.user.id,
                     "name": self.user.first_name,
                     # status:
                     "subbed": True,
@@ -34,16 +32,16 @@ class Database:
                 })
 
     @property
-    def user_ids(self):
+    def user_ids(self) -> list:
         """Returns a list of all user_ids found in DB"""
         return [x["_id"] for x in self.collection.find({})]
 
-    def clear(self):
+    def clear(self) -> None:
         """Delete everything in DB"""
         self.collection.delete_many({})
 
     @property
-    def user(self):
+    def user(self) -> User:
         return User.get_current()
 
     def __getattr__(self, item):
