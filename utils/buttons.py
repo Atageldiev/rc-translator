@@ -2,7 +2,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
 def get_ikb(data: list[dict] or dict, row_width: int = 3) -> InlineKeyboardMarkup:
-    """Rerturns InlineKeyboardMarkup, that's ready to use in message"""
+    """Returns InlineKeyboardMarkup, that's ready to use in message"""
     markup = InlineKeyboardMarkup(row_width=row_width)
 
     if isinstance(data, list):

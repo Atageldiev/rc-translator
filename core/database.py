@@ -45,11 +45,12 @@ class Database:
 
     @property
     def user(self) -> User:
+        """Returns current user instance"""
         return User.get_current()
 
     def __getattr__(self, item):
         data = self.collection.find_one({"_id": self.user.id})
-        return data.get(item, "DATABASE ERROR!")
+        return data.get(item, f"{item} does not seem to exist")
 
     def __setattr__(self, key, value):
         if key in self.__slots__:
