@@ -12,6 +12,7 @@
 # Own files
 .idea/
 test.py
+.env.prod
 # Procfile
 # runtime.txt
 ### Python template
