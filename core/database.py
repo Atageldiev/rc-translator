@@ -26,9 +26,6 @@ class Database:
                     # user-info:
                     "_id": self.user.id,
                     "name": self.user.first_name,
-                    # status:
-                    "subbed": True,
-                    "learning_mode": 1,
                     # rating:
                     "translated": 0,
                     "grammar_used": 0,
