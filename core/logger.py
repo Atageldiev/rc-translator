@@ -1,7 +1,7 @@
 import logging
 import os
 
-from core.conf.settings import BASE_DIR, DEBUG
+from core.conf.settings import BASE_DIR
 
 logger = logging.getLogger("main")
 
@@ -15,8 +15,6 @@ file_handler = logging.FileHandler(filename=os.path.join(BASE_DIR, ".log"))
 file_handler.setFormatter(formatter)
 
 logger.setLevel(logging.INFO)
-if not DEBUG:
-    logger.addHandler(file_handler)
 
 
 def get_logger():
