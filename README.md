@@ -1,3 +1,5 @@
+<img src="./logo.jpg" alt="RC-Translator">
+
 ### To start this bot locally:
 You will need:
 - Python version: [Python 3.9](https://www.python.org/downloads/release/python-390/)
