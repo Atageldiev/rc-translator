@@ -1,4 +1,4 @@
-<img src="./logo.jpg" alt="RC-Translator">
+<img src="./logo.jpg" alt="RC-Translator" style="width: 100%;">
 
 ### To start this bot locally:
 You will need:
