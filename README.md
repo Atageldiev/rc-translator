@@ -7,7 +7,7 @@ You will need:
 
 Steps:
 - Create a virtualenv and install requirements
-- Create a `.env.dev` file where you will have to pass following data:
+- Create a `.env.dev` file where you have to pass following data:
     ```
     DB_USER=<Your MongoDB user's full name>
     DB_PASS=<MongoDB db-password>
