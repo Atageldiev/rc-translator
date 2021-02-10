@@ -6,7 +6,3 @@ class Admin(StatesGroup):
     message_one_text = State()
 
     send_message_all = State()
-
-
-class LearningModeState(StatesGroup):
-    mode = State()
