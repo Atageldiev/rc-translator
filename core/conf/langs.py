@@ -52,4 +52,4 @@ class Langs:
 
     @classmethod
     def get_allowed(cls, lang_name):
-        return cls.ALLOWED.get(lang_name)
+        return cls.ALLOWED.get(lang_name, [])
