@@ -9,5 +9,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-COPY ./production/entrypoint.sh /
-ENTRYPOINT ["sh", "/entrypoint.sh"]
+ENTRYPOINT ["sh", "entrypoint.sh"]
