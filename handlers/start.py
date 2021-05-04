@@ -1,7 +1,7 @@
 from aiogram.dispatcher.filters.builtin import CommandStart
 from aiogram.types import Message
 
-from core.conf.settings import dp
+from core.settings import dp
 from utils.decorators import typing_action, check_user_existance
 
 

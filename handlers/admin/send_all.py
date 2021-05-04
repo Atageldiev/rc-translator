@@ -1,7 +1,7 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 
-from core.conf.settings import dp, bot, ADMINS
+from core.settings import dp, bot, ADMINS
 from core.commands.admin import COMMAND_SEND_ALL
 from core.database import db
 from core.states import Admin

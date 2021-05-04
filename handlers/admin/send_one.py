@@ -1,7 +1,7 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 
-from core.conf.settings import dp, bot, ADMINS
+from core.settings import dp, bot, ADMINS
 from core.commands.admin import COMMAND_SEND_ONE
 from core.states import Admin
 from utils.decorators import typing_action

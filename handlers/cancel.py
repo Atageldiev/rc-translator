@@ -1,7 +1,7 @@
 from aiogram.dispatcher.filters.builtin import Command
 from aiogram.types import Message, ReplyKeyboardRemove
 
-from core.conf.settings import dp, storage
+from core.settings import dp, storage
 from core.commands.common import COMMAND_CANCEL
 from utils.decorators import typing_action
 

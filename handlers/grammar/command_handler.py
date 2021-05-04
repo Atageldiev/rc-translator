@@ -1,7 +1,7 @@
 from aiogram.dispatcher.filters import Command
 from aiogram.types import Message
 
-from core.conf.settings import dp
+from core.settings import dp
 from core.commands.common import COMMAND_GRAMMAR
 from core.database import db
 from .utils import get_ikb_by_key_from_json

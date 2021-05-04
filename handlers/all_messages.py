@@ -1,7 +1,7 @@
 from aiogram.types import Message, CallbackQuery
 
 from core import langs
-from core.conf.settings import dp, storage, EXAMPLES_ERROR_TEXT, EXAMPLES_ARE_DONE_TEXT
+from core.settings import dp, storage, EXAMPLES_ERROR_TEXT, EXAMPLES_ARE_DONE_TEXT
 from core.database import db
 from core.parser import get_message_text_by_parsing_examples
 from core.translator import translate, detect

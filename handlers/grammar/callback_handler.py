@@ -1,6 +1,6 @@
 from aiogram.types import CallbackQuery
 
-from core.conf.settings import dp
+from core.settings import dp
 from core.parser import get_ikb_by_parsing_native_english
 from utils.formatters import bold
 from .utils import load_json_by_filename, get_ikb_by_key_from_json

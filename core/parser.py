@@ -2,7 +2,7 @@ import requests
 from aiogram.types import User
 from bs4 import BeautifulSoup
 
-from core.conf.settings import storage, EXAMPLES_ARE_DONE_TEXT, EXAMPLES_ERROR_TEXT
+from core.settings import storage, EXAMPLES_ARE_DONE_TEXT, EXAMPLES_ERROR_TEXT
 from utils.buttons import get_ikb
 from utils.formatters import strip_text
 
