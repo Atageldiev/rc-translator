@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 from core.settings import storage, EXAMPLES_ARE_DONE_TEXT, EXAMPLES_ERROR_TEXT
 from utils.buttons import get_ikb
-from utils.formatters import strip_text
+from utils.formatters import FormattedText
 
 HEADERS = {'user-agent': 'my-app/0.0.1'}
 
@@ -28,8 +28,8 @@ async def get_message_after_parsing_examples(html, num: int) -> str:
     html = html[num - 2:num + 1]
     msg = ""
     for el in html:
-        msg += "---" + strip_text(el.select('.src')[0].text) + "\n"
-        msg += "---" + strip_text(el.select('.trg')[0].text) + "\n\n"
+        msg += "---" + FormattedText(el.select('.src')[0].text).strip() + "\n"
+        msg += "---" + FormattedText(el.select('.trg')[0].text).strip() + "\n\n"
     return msg if msg else EXAMPLES_ARE_DONE_TEXT
 
 
@@ -48,5 +48,5 @@ def get_native_english_url(url) -> str:
 def get_ikb_by_parsing_native_english(url):
     """Parses native-english.ru, and gets links to the websites about requested rule of english"""
     html = get_html(url).select('.list__item > a')[:-3]
-    ikb_data = [{"text": strip_text(el.text), "url": get_native_english_url(el.get("href"))} for el in html]
+    ikb_data = [{"text": FormattedText(el.text).strip(), "url": get_native_english_url(el.get("href"))} for el in html]
     return get_ikb(ikb_data) if html else None

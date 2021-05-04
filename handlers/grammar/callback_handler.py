@@ -2,7 +2,7 @@ from aiogram.types import CallbackQuery
 
 from core.settings import dp
 from core.parser import get_ikb_by_parsing_native_english
-from utils.formatters import bold
+from utils.formatters import FormattedText
 from .utils import load_json_by_filename, get_ikb_by_key_from_json
 
 callbacks: dict = load_json_by_filename("callbacks.json")
@@ -21,5 +21,5 @@ async def handle_parsing_callbacks(call: CallbackQuery):
 
 @dp.callback_query_handler(lambda call: call.data in callbacks.keys() and not is_parsing_callback(call.data))
 async def handle_markup_callbacks(call: CallbackQuery):
-    await call.message.answer(bold("Найденный материал: "),
+    await call.message.answer(FormattedText("Найденный материал: ").bold(),
                               reply_markup=get_ikb_by_key_from_json(call.data, "callbacks.json"))

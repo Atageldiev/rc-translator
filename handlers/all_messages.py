@@ -7,17 +7,17 @@ from core.parser import get_message_text_by_parsing_examples
 from core.translator import translate, detect
 from utils.buttons import get_ikb
 from utils.decorators import typing_action, check_user_existance
-from utils.formatters import bold
+from utils.formatters import FormattedText
 
 
 def get_message_template(text):
     return f"Результаты: \n" \
-           f"     {bold('Русский')} - {translate(text, dest='ru')}\n" \
-           f"     {bold('English')} - {translate(text, dest='en')}\n" \
-           f"     {bold('Français')} - {translate(text, dest='fr')}\n" \
-           f"     {bold('Deutsch')} - {translate(text, dest='de')}\n" \
-           f"     {bold('Español')} - {translate(text, dest='es')}\n" \
-           f"     {bold('Italian')} - {translate(text, dest='it')}\n\n"
+           f"     {FormattedText('Русский').bold()} - {translate(text, dest='ru')}\n" \
+           f"     {FormattedText('English').bold()} - {translate(text, dest='en')}\n" \
+           f"     {FormattedText('Français').bold()} - {translate(text, dest='fr')}\n" \
+           f"     {FormattedText('Deutsch').bold()} - {translate(text, dest='de')}\n" \
+           f"     {FormattedText('Español').bold()} - {translate(text, dest='es')}\n" \
+           f"     {FormattedText('Italian').bold()} - {translate(text, dest='it')}\n\n"
 
 
 # Handle when got a sentence
