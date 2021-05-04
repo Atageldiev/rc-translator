@@ -41,12 +41,14 @@ async def get_message_text_by_parsing_examples():
     return await get_message_after_parsing_examples(html, data["examples_number"]) if html else EXAMPLES_ERROR_TEXT
 
 
-def get_native_english_url(url) -> str:
-    return f"https://www.native-english.ru{url}"
-
-
 def get_ikb_by_parsing_native_english(url):
     """Parses native-english.ru, and gets links to the websites about requested rule of english"""
     html = get_html(url).select('.list__item > a')[:-3]
-    ikb_data = [{"text": FormattedText(el.text).strip(), "url": get_native_english_url(el.get("href"))} for el in html]
+    ikb_data = [
+        {
+            "text": FormattedText(el.text).strip(),
+            "url": f"https://www.native-english.ru{el.get('href')}"
+        }
+        for el in html
+    ]
     return get_ikb(ikb_data) if html else None
