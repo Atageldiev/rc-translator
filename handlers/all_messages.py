@@ -1,6 +1,6 @@
 from aiogram.types import Message, CallbackQuery
 
-from core.conf import Langs
+from core.conf import langs
 from core.conf.settings import dp, storage, EXAMPLES_ERROR_TEXT, EXAMPLES_ARE_DONE_TEXT
 from core.database import db
 from core.parser import get_message_text_by_parsing_examples
@@ -36,15 +36,15 @@ async def handle_empty_message(message: Message):
 async def handle_empty_message(message: Message):
     db.translated += 1
 
-    src = Langs.BY_CODE.get(detect(message.text))
+    src = langs.BY_CODE.get(detect(message.text))
     await storage.update_data(user=message.from_user.id, data={"examples_number": 3, "src": src, "word": message.text})
 
-    markup = get_ikb([{"text": lang, "callback_data": lang} for lang in Langs.get_allowed(src)])
+    markup = get_ikb([{"text": lang, "callback_data": lang} for lang in langs.get_allowed(src)])
     await message.answer(text=get_message_template(message.text) + "Нажми на кнопку, чтобы получить примеры",
                          reply_markup=markup)
 
 
-@dp.callback_query_handler(text=[lang_key for lang_key in Langs.BY_NAME.keys()])
+@dp.callback_query_handler(text=[lang_key for lang_key in langs.BY_NAME.keys()])
 async def handle_get_examples(call: CallbackQuery):
     await storage.update_data(user=call.from_user.id, data={"dest": call.data})
     await send_examples(call)
