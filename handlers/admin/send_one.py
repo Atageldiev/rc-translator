@@ -2,11 +2,12 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 
 from core.conf.settings import dp, bot, ADMINS
+from core.commands.admin import COMMAND_SEND_ONE
 from core.states import Admin
 from utils.decorators import typing_action
 
 
-@dp.message_handler(lambda message: message.from_user.id in ADMINS, commands="send_one", commands_prefix="!")
+@dp.message_handler(lambda message: message.from_user.id in ADMINS, commands=COMMAND_SEND_ONE, commands_prefix="!")
 @typing_action
 async def send_one(message: Message):
     await Admin.message_one_chat_id.set()

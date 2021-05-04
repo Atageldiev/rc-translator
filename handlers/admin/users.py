@@ -1,11 +1,12 @@
 from aiogram.types import Message
 
 from core.conf.settings import dp, bot, ADMINS
+from core.commands.admin import COMMAND_USERS
 from core.database import db
 from utils.decorators import typing_action
 
 
-@dp.message_handler(lambda message: message.from_user.id in ADMINS, commands="users", commands_prefix="!")
+@dp.message_handler(lambda message: message.from_user.id in ADMINS, commands=COMMAND_USERS, commands_prefix="!")
 @typing_action
 async def users(message: Message):
     for admin in ADMINS:
