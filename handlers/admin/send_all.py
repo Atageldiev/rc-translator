@@ -10,7 +10,7 @@ from utils.decorators import typing_action
 
 @dp.message_handler(lambda message: message.from_user.id in ADMINS, commands=COMMAND_SEND_ALL, commands_prefix="!")
 @typing_action
-async def send_all(message: Message):
+async def send_all(message: Message, *args, **kwargs):
     await Admin.send_message_all.set()
     await message.answer("Бать, напиши сообщение, которое хочешь отправить всем юзерам")
 

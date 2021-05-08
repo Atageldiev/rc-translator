@@ -8,7 +8,7 @@ from utils.decorators import typing_action, check_user_existance
 @dp.message_handler(CommandStart())
 @typing_action
 @check_user_existance
-async def start(message: Message):
+async def start(message: Message, *args, **kwargs):
     await message.reply("""Привет
     
 Кто я?

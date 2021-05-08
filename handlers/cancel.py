@@ -9,6 +9,6 @@ from utils.decorators import typing_action
 @dp.message_handler(Command(COMMAND_CANCEL), state="*")
 @dp.message_handler(lambda message: message.text.lower().strip() in ('cancel',))
 @typing_action
-async def cancel(message: Message):
+async def cancel(message: Message, *args, **kwargs):
     await storage.reset_state(user=message.from_user.id)
     await message.reply("Cancelled...", reply_markup=ReplyKeyboardRemove())

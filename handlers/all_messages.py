@@ -27,7 +27,7 @@ def get_message_template(text):
 @dp.message_handler(lambda message: len(message.text.split()) > 1)
 @typing_action
 @check_user_existance
-async def handle_empty_message(message: Message):
+async def handle_empty_message(message: Message, *args, **kwargs):
     db.translated += 1
     return await message.answer(text=get_message_template(message.text))
 
@@ -36,7 +36,7 @@ async def handle_empty_message(message: Message):
 @dp.message_handler(lambda message: len(message.text.split()) == 1)
 @typing_action
 @check_user_existance
-async def handle_empty_message(message: Message):
+async def handle_empty_message(message: Message, *args, **kwargs):
     db.translated += 1
 
     src = langs.BY_CODE.get(detect(message.text))
@@ -48,7 +48,8 @@ async def handle_empty_message(message: Message):
 
 
 @dp.callback_query_handler(text=["more_examples", *langs.BY_NAME.keys()])
-async def handle_get_examples(call: CallbackQuery):
+@typing_action
+async def handle_get_examples(call: CallbackQuery, *args, **kwargs):
     if call.data != "more_examples":
         await storage.update_data(user=call.from_user.id, data={"dest": call.data})
 

@@ -9,7 +9,7 @@ from utils.decorators import typing_action
 
 @dp.message_handler(lambda message: message.from_user.id in ADMINS, commands=COMMAND_SEND_ONE, commands_prefix="!")
 @typing_action
-async def send_one(message: Message):
+async def send_one(message: Message, *args, **kwargs):
     await Admin.message_one_chat_id.set()
     await message.answer("Бать, скинь chat_id")
 
