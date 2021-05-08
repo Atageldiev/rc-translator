@@ -11,13 +11,16 @@ from utils.formatters import FormattedText
 
 
 def get_message_template(text):
-    return f"Результаты: \n" \
-           f"     {FormattedText('Русский').bold()} - {translate(text, dest='ru')}\n" \
-           f"     {FormattedText('English').bold()} - {translate(text, dest='en')}\n" \
-           f"     {FormattedText('Français').bold()} - {translate(text, dest='fr')}\n" \
-           f"     {FormattedText('Deutsch').bold()} - {translate(text, dest='de')}\n" \
-           f"     {FormattedText('Español').bold()} - {translate(text, dest='es')}\n" \
-           f"     {FormattedText('Italian').bold()} - {translate(text, dest='it')}\n\n"
+    return f"""
+Результаты:
+
+    {FormattedText('Русский').bold()} - {translate(text, dest='ru')}
+    {FormattedText('English').bold()} - {translate(text, dest='en')}
+    {FormattedText('Français').bold()} - {translate(text, dest='fr')}
+    {FormattedText('Deutsch').bold()} - {translate(text, dest='de')}
+    {FormattedText('Español').bold()} - {translate(text, dest='es')}
+    {FormattedText('Italian').bold()} - {translate(text, dest='it')}
+            """
 
 
 # Handle when got a sentence
@@ -48,7 +51,7 @@ async def handle_empty_message(message: Message):
 async def handle_get_examples(call: CallbackQuery):
     if call.data != "more_examples":
         await storage.update_data(user=call.from_user.id, data={"dest": call.data})
-        
+
     user_id = call.from_user.id
     data = await storage.get_data(user=user_id)
 
