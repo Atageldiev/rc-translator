@@ -1,8 +1,6 @@
-from aiogram.types import Message
-
-from core.settings import dp, bot, ADMINS
 from core.commands.admin import COMMAND_USERS
 from core.database import db
+from core.settings import dp, bot, ADMINS
 from utils.decorators import typing_action
 
 
