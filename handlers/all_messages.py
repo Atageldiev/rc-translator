@@ -44,18 +44,11 @@ async def handle_empty_message(message: Message):
                          reply_markup=markup)
 
 
-@dp.callback_query_handler(text=[lang_key for lang_key in langs.BY_NAME.keys()])
+@dp.callback_query_handler(text=["more_examples", *langs.BY_NAME.keys()])
 async def handle_get_examples(call: CallbackQuery):
-    await storage.update_data(user=call.from_user.id, data={"dest": call.data})
-    await send_examples(call)
-
-
-@dp.callback_query_handler(text=["more_examples"])
-async def handle_get_more_examples(call: CallbackQuery):
-    await send_examples(call)
-
-
-async def send_examples(call: CallbackQuery):
+    if call.data != "more_examples":
+        await storage.update_data(user=call.from_user.id, data={"dest": call.data})
+        
     user_id = call.from_user.id
     data = await storage.get_data(user=user_id)
 
