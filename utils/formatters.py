@@ -3,8 +3,9 @@ UNDERLINED = "<u>{}</u>"
 CURSIVE = "<em>{}</em>"
 
 
-class FormattedText:
+class FormattedText(str):
     def __init__(self, text):
+        super().__init__()
         self.text = text
 
     def bold(self):
@@ -25,9 +26,3 @@ class FormattedText:
 
     def __str__(self):
         return self.text
-
-    def __add__(self, other):
-        return str(self) + other
-
-    def __radd__(self, other):
-        return self.__add__(other)
