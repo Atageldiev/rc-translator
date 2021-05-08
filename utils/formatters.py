@@ -25,3 +25,9 @@ class FormattedText:
 
     def __str__(self):
         return self.text
+
+    def __add__(self, other):
+        return str(self) + other
+
+    def __radd__(self, other):
+        return self.__add__(other)
