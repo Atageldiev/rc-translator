@@ -9,4 +9,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-ENTRYPOINT ["sh", "entrypoint.sh"]
+CMD ["python", "bot.py"]
