@@ -7,7 +7,7 @@ from core.parser import get_message_text_by_parsing_examples
 from core.translator import translate, detect
 from utils.buttons import get_ikb
 from utils.decorators import typing_action, check_user_existance
-from utils.formatters import FormattedText
+from utils.text import FormattedText
 
 
 def get_message_template(text):

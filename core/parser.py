@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 from core.settings import storage, EXAMPLES_ARE_DONE_TEXT, EXAMPLES_ERROR_TEXT
 from utils.buttons import get_ikb
-from utils.formatters import FormattedText
+from utils.text import FormattedText
 
 HEADERS = {'user-agent': 'my-app/0.0.1'}
 

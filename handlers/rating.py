@@ -4,7 +4,7 @@ from aiogram.types import Message
 from core.settings import dp
 from core.commands.common import COMMAND_RATING
 from core.database import db
-from utils.formatters import FormattedText
+from utils.text import FormattedText
 
 
 @dp.message_handler(Command(COMMAND_RATING))
