@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "rc-translator"
+version = "0.1.0"
+description = ""
+authors = ["Ulukman Amangeldiev <ulukmanatageldiuulu@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+aiofiles = "0.4.0"
+aiogram = "2.11.2"
+async_lru = "1.0.2"
+beautifulsoup4 = "4.9.3"
+dnspython = "2.1.0"
+google-trans-new = "1.1.9"
+httpx = "0.13.3"
+pip-chill = "1.0.0"
+pydantic = "1.7.3"
+pymongo = "3.11.2"
+pyTelegramBotAPI = "3.7.5"
+python-dotenv = "0.15.0"
+schedule = "0.6.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

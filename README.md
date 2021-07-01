@@ -11,7 +11,7 @@ Steps:
     ```
     DB_USER=<Your MongoDB user's full name>
     DB_PASS=<MongoDB db-password>
-    DB_DB=<MongoDB database name>
+    DB_HOST=<MongoDB host name>
     TOKEN=<Bot API Token from BotFather>
     ```
 - Then run `bot.py`
